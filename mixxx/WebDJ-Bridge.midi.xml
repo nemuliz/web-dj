@@ -190,7 +190,7 @@
       <description>Deck B PLAY / PAUSE</description>
       <group>[Channel2]</group>
       <key>play</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x25</midino>
       <options><Normal/></options>
     </control>
@@ -198,7 +198,7 @@
       <description>Deck B CUE</description>
       <group>[Channel2]</group>
       <key>cue_default</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x27</midino>
       <options><Normal/></options>
     </control>
@@ -206,7 +206,7 @@
       <description>Deck B SYNC</description>
       <group>[Channel2]</group>
       <key>beatsync</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x29</midino>
       <options><Normal/></options>
     </control>
@@ -214,7 +214,7 @@
       <description>Deck B 2 beat loop toggle</description>
       <group>[Channel2]</group>
       <key>beatloop_2_toggle</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x2b</midino>
       <options><Normal/></options>
     </control>
@@ -222,7 +222,7 @@
       <description>Deck B pitch reset</description>
       <group>[Channel2]</group>
       <key>WebDJBridge.pitchReset</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x2d</midino>
       <options><Script-Binding/></options>
     </control>
@@ -230,7 +230,7 @@
       <description>Deck B headphone cue</description>
       <group>[Channel2]</group>
       <key>pfl</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x2f</midino>
       <options><Normal/></options>
     </control>
@@ -238,7 +238,7 @@
       <description>Deck B HOT CUE 1</description>
       <group>[Channel2]</group>
       <key>hotcue_1_activate</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x34</midino>
       <options><Normal/></options>
     </control>
@@ -246,7 +246,7 @@
       <description>Deck B HOT CUE 2</description>
       <group>[Channel2]</group>
       <key>hotcue_2_activate</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x35</midino>
       <options><Normal/></options>
     </control>
@@ -254,7 +254,7 @@
       <description>Deck B HOT CUE 3</description>
       <group>[Channel2]</group>
       <key>hotcue_3_activate</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x36</midino>
       <options><Normal/></options>
     </control>
@@ -262,7 +262,7 @@
       <description>Deck B HOT CUE 4</description>
       <group>[Channel2]</group>
       <key>hotcue_4_activate</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x37</midino>
       <options><Normal/></options>
     </control>
@@ -270,7 +270,7 @@
       <description>Deck B LOOP IN</description>
       <group>[Channel2]</group>
       <key>loop_in</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x3b</midino>
       <options><Normal/></options>
     </control>
@@ -278,7 +278,7 @@
       <description>Deck B LOOP OUT</description>
       <group>[Channel2]</group>
       <key>loop_out</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x3d</midino>
       <options><Normal/></options>
     </control>
@@ -286,7 +286,7 @@
       <description>Deck B RELOOP / EXIT</description>
       <group>[Channel2]</group>
       <key>reloop_toggle</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x3f</midino>
       <options><Normal/></options>
     </control>
@@ -294,7 +294,7 @@
       <description>Deck B jog touch</description>
       <group>[Channel2]</group>
       <key>WebDJBridge.jogTouch</key>
-      <status>0x91</status>
+      <status>0x90</status>
       <midino>0x41</midino>
       <options><Script-Binding/></options>
     </control>
@@ -302,7 +302,7 @@
       <description>Deck B jog turn</description>
       <group>[Channel2]</group>
       <key>WebDJBridge.jogTurn</key>
-      <status>0xB1</status>
+      <status>0xB0</status>
       <midino>0x15</midino>
       <options><Script-Binding/></options>
     </control>
