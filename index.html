@@ -11,18 +11,12 @@
 <header class="topbar">
   <div class="brand"><span class="brand-mark">◈</span><div><strong>WEBDJ</strong><small>DUAL DECK PERFORMANCE</small></div></div>
   <div class="top-status"><span id="midiDot" class="dot"></span><span id="midiStatus">MIDI未接続</span><button id="midiConnect" class="small-btn">MIDI接続</button></div>
-  <button id="audioEnable" class="small-btn primary">オーディオ有効化</button>
 </header>
 <main>
   <section class="transport">
     <div class="deck" id="deckA" data-deck="A">
-      <div class="deck-head"><span class="deck-tag">DECK 1</span><span class="track-name" id="nameA">トラックを読み込んでください</span><label class="load-btn">LOAD<input id="fileA" type="file" accept="audio/*"></label></div>
-      <div class="wavebox"><canvas id="waveA"></canvas><div class="wave-time"><span id="timeA">00:00.0</span><span id="durationA">--:--</span></div></div>
-      <div class="deck-main">
-        <div class="pitch"><span>PITCH</span><input id="pitchA" type="range" min="-8" max="8" value="0" step=".1"><output id="pitchValA">0.0%</output><button class="tiny" data-action="pitchreset" data-deck="A">RESET</button></div>
-        <button class="jog" id="jogA" aria-label="Deck 1 jog wheel"><span class="jog-ring"></span><span class="jog-label">WEB<br>DJ</span><span class="jog-position" id="posA"></span></button>
-        <div class="deck-buttons"><button class="play" data-action="play" data-deck="A">▶ PLAY</button><button data-action="cue" data-deck="A">CUE</button><button data-action="sync" data-deck="A">SYNC</button><button data-action="loop" data-deck="A">2 BEAT LOOP</button><button data-action="loopin" data-deck="A">LOOP IN</button><button data-action="loopout" data-deck="A">LOOP OUT</button><button data-action="reloop" data-deck="A">RELOOP / EXIT</button><div class="pad-grid" data-deck="A"><button data-action="pad" data-pad="0" data-deck="A">HOT CUE 1</button><button data-action="pad" data-pad="1" data-deck="A">HOT CUE 2</button><button data-action="pad" data-pad="2" data-deck="A">HOT CUE 3</button><button data-action="pad" data-pad="3" data-deck="A">HOT CUE 4</button></div></div>
-      </div>
+      <div class="deck-head"><span class="deck-tag">DECK 1</span><span class="track-name">MIDI CONTROLLER · MIXXX DECK 1</span></div>
+
     </div>
     <div class="mixer">
       <div class="mixer-title">MIXER <span>2 CHANNEL</span></div>
@@ -34,21 +28,15 @@
       <div class="vu"><div><span>CH 1</span><meter id="meterA" min="0" max="1" value="0"></meter></div><div><span>CH 2</span><meter id="meterB" min="0" max="1" value="0"></meter></div></div>
     </div>
     <div class="deck" id="deckB" data-deck="B">
-      <div class="deck-head"><span class="deck-tag">DECK 2</span><span class="track-name" id="nameB">トラックを読み込んでください</span><label class="load-btn">LOAD<input id="fileB" type="file" accept="audio/*"></label></div>
-      <div class="wavebox"><canvas id="waveB"></canvas><div class="wave-time"><span id="timeB">00:00.0</span><span id="durationB">--:--</span></div></div>
-      <div class="deck-main">
-        <div class="pitch"><span>PITCH</span><input id="pitchB" type="range" min="-8" max="8" value="0" step=".1"><output id="pitchValB">0.0%</output><button class="tiny" data-action="pitchreset" data-deck="B">RESET</button></div>
-        <button class="jog" id="jogB" aria-label="Deck 2 jog wheel"><span class="jog-ring"></span><span class="jog-label">WEB<br>DJ</span><span class="jog-position" id="posB"></span></button>
-        <div class="deck-buttons"><button class="play" data-action="play" data-deck="B">▶ PLAY</button><button data-action="cue" data-deck="B">CUE</button><button data-action="sync" data-deck="B">SYNC</button><button data-action="loop" data-deck="B">2 BEAT LOOP</button><button data-action="loopin" data-deck="B">LOOP IN</button><button data-action="loopout" data-deck="B">LOOP OUT</button><button data-action="reloop" data-deck="B">RELOOP / EXIT</button><div class="pad-grid" data-deck="B"><button data-action="pad" data-pad="0" data-deck="B">HOT CUE 1</button><button data-action="pad" data-pad="1" data-deck="B">HOT CUE 2</button><button data-action="pad" data-pad="2" data-deck="B">HOT CUE 3</button><button data-action="pad" data-pad="3" data-deck="B">HOT CUE 4</button></div></div>
-      </div>
+      <div class="deck-head"><span class="deck-tag">DECK 2</span><span class="track-name">MIDI CONTROLLER · MIXXX DECK 2</span></div>
+
     </div>
   </section>
   <section class="bottom">
-    <div class="library"><div class="section-head">TRACK LIBRARY <span>LOCAL FILES</span></div><p>LOADボタンから音声ファイルを読み込むと、各デッキで再生できます。音声はこのブラウザ内で処理されます。</p><div id="libraryList" class="library-list">まだトラックがありません</div></div>
     <div class="midi-panel"><div class="section-head">MIDI MONITOR <span>WEB MIDI API</span></div><div class="midi-selectors"><label>INPUT <select id="midiInputSelect"><option value="">未選択</option></select></label><label>OUTPUT <select id="midiOutputSelect"><option value="">未選択</option></select></label></div><div id="midiLog" class="midi-log">MIDIデバイスを接続するとメッセージが表示されます。</div><p class="notice">このページはMIDIデバイスへのアクセスを試みます。ブラウザから仮想MIDIポートを作成して、RekordboxやMixxxへ直接デバイスとして見せることはできません。</p></div>
   </section>
 </main>
-<footer>WEBDJ prototype · Browser audio + Web MIDI · GitHub Pages compatible</footer>
+<footer>WEBDJ MIDI Controller · loopMIDI + Mixxx · Browser audio disabled</footer>
 <script src="app.js"></script>
 </body>
 </html>
