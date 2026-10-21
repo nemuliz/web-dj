@@ -43,8 +43,26 @@
   for(const id of ['A','B']) {
     $('pitch'+id).addEventListener('input',e=>{decks[id].pitch=Number(e.target.value);$('pitchVal'+id).textContent=`${decks[id].pitch.toFixed(1)}%`;if(decks[id].source)decks[id].source.playbackRate.value=1+decks[id].pitch/100;});
     $('wave'+id).addEventListener('click',e=>{const d=decks[id];if(!d.buffer)return;const r=e.currentTarget.getBoundingClientRect();seek(id,((e.clientX-r.left)/r.width)*d.buffer.duration);});
-    const jog=$('jog'+id);jog.addEventListener('pointerdown',e=>{ensureAudio();decks[id].jogDown=true;decks[id].jogLastX=e.clientX;jog.setPointerCapture(e.pointerId);});jog.addEventListener('pointermove',e=>{const d=decks[id];if(!d.jogDown)return;const dx=e.clientX-d.jogLastX;d.jogLastX=e.clientX;d.jogAngle+=dx*2;const t=currentTime(d)+(dx*.012);if(d.playing){d.offset=Math.max(0,Math.min(d.buffer?.duration||0,t));d.startAt=audioCtx.currentTime;stopSource(d);d.playing=false;play(id);}else if(d.buffer)seek(id,t);else renderDeck(id);});
-    jog.addEventListener('pointerup',()=>decks[id].jogDown=false);jog.addEventListener('pointercancel',()=>decks[id].jogDown=false);
+    const jog=$('jog'+id);
+    const pointerAngle=e=>{const r=jog.getBoundingClientRect();return Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2))*180/Math.PI;};
+    jog.addEventListener('pointerdown',e=>{ensureAudio();e.preventDefault();const d=decks[id];d.jogDown=true;d.jogLastAngle=pointerAngle(e);jog.setPointerCapture(e.pointerId);});
+    jog.addEventListener('pointermove',e=>{
+      const d=decks[id];if(!d.jogDown)return;e.preventDefault();
+      const angle=pointerAngle(e);let delta=angle-d.jogLastAngle;
+      if(delta>180)delta-=360;else if(delta< -180)delta+=360;
+      d.jogLastAngle=angle;
+      if(!delta)return;
+      d.jogAngle+=delta;
+      const t=currentTime(d)+(delta*.012);
+      if(d.buffer){
+        if(d.playing){d.offset=Math.max(0,Math.min(d.buffer.duration,t));d.startAt=audioCtx.currentTime;stopSource(d);d.playing=false;play(id);}
+        else seek(id,t);
+      }else renderDeck(id);
+      const cc=id==='A'?20:21;
+      sendMidi(0xB0,cc,Math.max(0,Math.min(127,64+Math.round(delta*2))));
+    });
+    const releaseJog=()=>{decks[id].jogDown=false;};
+    jog.addEventListener('pointerup',releaseJog);jog.addEventListener('pointercancel',releaseJog);jog.addEventListener('lostpointercapture',releaseJog);
   }
   document.querySelectorAll('input[type=range]').forEach(el=>{if(['pitchA','pitchB'].includes(el.id))return;el.addEventListener('input',applyMix);});
   document.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;const id=b.dataset.deck,d=decks[id];switch(b.dataset.action){case'play':play(id);break;case'cue':if(d.playing){d.offset=currentTime(d);d.playing=false;stopSource(d);}else seek(id,d.cue);d.cue=d.offset;renderDeck(id);break;case'sync':{const other=decks[id==='A'?'B':'A'];if(other.buffer&&d.buffer){const bpmFactor=1;d.pitch=other.pitch*bpmFactor;$('pitch'+id).value=d.pitch;$('pitchVal'+id).textContent=d.pitch.toFixed(1)+'%';if(d.source)d.source.playbackRate.value=1+d.pitch/100;}break;}case'loop':d.loop=!d.loop;b.textContent=d.loop?'LOOP ON':'2 BEAT LOOP';b.classList.toggle('active',d.loop);break;case'pad':{const n=Number(b.dataset.pad);if(d.pads[n]===null){d.pads[n]=currentTime(d);b.classList.add('active');}else seek(id,d.pads[n]);break;}case'pitchreset':d.pitch=0;$('pitch'+id).value=0;$('pitchVal'+id).textContent='0.0%';if(d.source)d.source.playbackRate.value=1;break;case'headcue':b.classList.toggle('active');break;}});
@@ -109,13 +127,6 @@
   }
   document.querySelectorAll('button[data-action]').forEach(b=>b.addEventListener('click',()=>pulseNote(noteForButton(b))));
   Object.keys(ccMap).forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>sendControl(el));});
-  for(const id of ['A','B']){
-    $('jog'+id).addEventListener('pointermove',e=>{
-      if(!decks[id].jogDown)return;
-      const cc=id==='A'?20:21;
-      sendMidi(0xB0,cc,Math.max(0,Math.min(127,64+Math.round((e.movementX||0)*2))));
-    });
-  }
   function tick(){for(const id of ['A','B']){const d=decks[id];if(d.playing&&d.buffer){const t=currentTime(d);if(d.loop&&d.buffer.duration>0&&t>=Math.max(.1,d.offset+4)){seek(id,d.offset); }else if(t>=d.buffer.duration){d.playing=false;d.offset=0;stopSource(d);}renderDeck(id);if(d.analyser){const a=new Uint8Array(d.analyser.frequencyBinCount);d.analyser.getByteTimeDomainData(a);let sum=0;for(const v of a)sum+=(v-128)**2;$('meter'+id).value=Math.min(1,Math.sqrt(sum/a.length)/70);}}}requestAnimationFrame(tick);}
   window.addEventListener('resize',()=>['A','B'].forEach(renderWave));renderDeck('A');renderDeck('B');requestAnimationFrame(tick);
 })();
