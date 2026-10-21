@@ -9,7 +9,7 @@
   const fmt = t => { if(!Number.isFinite(t)) return '--:--'; const m=Math.floor(t/60), s=Math.floor(t%60), d=Math.floor((t%1)*10); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${d}`; };
   function initDeck(id) {
     const filters = {};
-    return {id, buffer:null, source:null, startAt:0, offset:0, playing:false, pitch:0, cue:0, loop:false, pads:[null,null,null,null], gain:null, eq:{}, filter:null, analyser:null, channelGain:null, fileName:'', jogAngle:0, jogDown:false, jogLastX:0,
+    return {id, buffer:null, source:null, startAt:0, offset:0, playing:false, pitch:0, cue:0, loop:false, loopIn:0, loopOut:null, pads:[null,null,null,null], gain:null, eq:{}, filter:null, analyser:null, channelGain:null, fileName:'', jogAngle:0, jogDown:false, jogLastX:0,
       filters};
   }
   decks.A=initDeck('A'); decks.B=initDeck('B');
@@ -45,7 +45,7 @@
     $('wave'+id).addEventListener('click',e=>{const d=decks[id];if(!d.buffer)return;const r=e.currentTarget.getBoundingClientRect();seek(id,((e.clientX-r.left)/r.width)*d.buffer.duration);});
     const jog=$('jog'+id);
     const pointerAngle=e=>{const r=jog.getBoundingClientRect();return Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2))*180/Math.PI;};
-    jog.addEventListener('pointerdown',e=>{ensureAudio();e.preventDefault();const d=decks[id];d.jogDown=true;d.jogLastAngle=pointerAngle(e);jog.setPointerCapture(e.pointerId);});
+    jog.addEventListener('pointerdown',e=>{ensureAudio();e.preventDefault();const d=decks[id];d.jogDown=true;d.jogLastAngle=pointerAngle(e);jog.setPointerCapture(e.pointerId);sendMidi(0x90,id==='A'?64:65,127);});
     jog.addEventListener('pointermove',e=>{
       const d=decks[id];if(!d.jogDown)return;e.preventDefault();
       const angle=pointerAngle(e);let delta=angle-d.jogLastAngle;
@@ -61,11 +61,11 @@
       const cc=id==='A'?20:21;
       sendMidi(0xB0,cc,Math.max(0,Math.min(127,64+Math.round(delta*2))));
     });
-    const releaseJog=()=>{decks[id].jogDown=false;};
+    const releaseJog=()=>{if(decks[id].jogDown)sendMidi(0x80,id==='A'?64:65,0);decks[id].jogDown=false;};
     jog.addEventListener('pointerup',releaseJog);jog.addEventListener('pointercancel',releaseJog);jog.addEventListener('lostpointercapture',releaseJog);
   }
   document.querySelectorAll('input[type=range]').forEach(el=>{if(['pitchA','pitchB'].includes(el.id))return;el.addEventListener('input',applyMix);});
-  document.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;const id=b.dataset.deck,d=decks[id];switch(b.dataset.action){case'play':play(id);break;case'cue':if(d.playing){d.offset=currentTime(d);d.playing=false;stopSource(d);}else seek(id,d.cue);d.cue=d.offset;renderDeck(id);break;case'sync':{const other=decks[id==='A'?'B':'A'];if(other.buffer&&d.buffer){const bpmFactor=1;d.pitch=other.pitch*bpmFactor;$('pitch'+id).value=d.pitch;$('pitchVal'+id).textContent=d.pitch.toFixed(1)+'%';if(d.source)d.source.playbackRate.value=1+d.pitch/100;}break;}case'loop':d.loop=!d.loop;b.textContent=d.loop?'LOOP ON':'2 BEAT LOOP';b.classList.toggle('active',d.loop);break;case'pad':{const n=Number(b.dataset.pad);if(d.pads[n]===null){d.pads[n]=currentTime(d);b.classList.add('active');}else seek(id,d.pads[n]);break;}case'pitchreset':d.pitch=0;$('pitch'+id).value=0;$('pitchVal'+id).textContent='0.0%';if(d.source)d.source.playbackRate.value=1;break;case'headcue':b.classList.toggle('active');break;}});
+  document.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;const id=b.dataset.deck,d=decks[id];switch(b.dataset.action){case'play':play(id);break;case'cue':if(d.playing){d.offset=currentTime(d);d.playing=false;stopSource(d);}else seek(id,d.cue);d.cue=d.offset;renderDeck(id);break;case'sync':{const other=decks[id==='A'?'B':'A'];if(other.buffer&&d.buffer){const bpmFactor=1;d.pitch=other.pitch*bpmFactor;$('pitch'+id).value=d.pitch;$('pitchVal'+id).textContent=d.pitch.toFixed(1)+'%';if(d.source)d.source.playbackRate.value=1+d.pitch/100;}break;}case'loop':d.loop=!d.loop;b.textContent=d.loop?'LOOP ON':'2 BEAT LOOP';b.classList.toggle('active',d.loop);if(d.loop&&!d.loopOut)d.loopOut=Math.min(d.buffer?.duration||Infinity,d.loopIn+4);break;case'loopin':d.loopIn=currentTime(d);if(d.loopOut!==null&&d.loopOut<=d.loopIn)d.loopOut=null;b.classList.add('active');log(`Deck ${id}: loop in ${fmt(d.loopIn)}`);break;case'loopout':d.loopOut=currentTime(d);if(d.loopOut<=d.loopIn)d.loopOut=d.loopIn+0.25;d.loop=true;document.querySelector(`[data-action="loop"][data-deck="${id}"]`)?.classList.add('active');log(`Deck ${id}: loop out ${fmt(d.loopOut)}`);break;case'reloop':if(d.loop){d.loop=false;document.querySelector(`[data-action="loop"][data-deck="${id}"]`)?.classList.remove('active');}else{d.loop=true;if(d.loopOut===null)d.loopOut=Math.min(d.buffer?.duration||Infinity,d.loopIn+4);seek(id,d.loopIn);document.querySelector(`[data-action="loop"][data-deck="${id}"]`)?.classList.add('active');}break;case'pad':{const n=Number(b.dataset.pad);if(d.pads[n]===null){d.pads[n]=currentTime(d);b.classList.add('active');}else seek(id,d.pads[n]);break;}case'pitchreset':d.pitch=0;$('pitch'+id).value=0;$('pitchVal'+id).textContent='0.0%';if(d.source)d.source.playbackRate.value=1;break;case'headcue':b.classList.toggle('active');break;}});
   const midiInputSelect=$('midiInputSelect'), midiOutputSelect=$('midiOutputSelect');
   function bindMidiInput() {
     if(!midiAccess)return;
@@ -108,7 +108,7 @@
     catch(err){log('MIDI送信エラー: '+err.message);}
   }
   // Generic MIDI mapping on channel 1; not a Pioneer hardware protocol.
-  const noteMap={play:{A:36,B:37},cue:{A:38,B:39},sync:{A:40,B:41},loop:{A:42,B:43},pitchreset:{A:44,B:45},headcue:{A:46,B:47}};
+  const noteMap={play:{A:36,B:37},cue:{A:38,B:39},sync:{A:40,B:41},loop:{A:42,B:43},pitchreset:{A:44,B:45},headcue:{A:46,B:47},loopin:{A:58,B:59},loopout:{A:60,B:61},reloop:{A:62,B:63}};
   function noteForButton(b){
     const action=b.dataset.action,deck=b.dataset.deck||'A';
     if(action==='pad')return 48+(deck==='B'?4:0)+Number(b.dataset.pad||0);
@@ -127,6 +127,6 @@
   }
   document.querySelectorAll('button[data-action]').forEach(b=>b.addEventListener('click',()=>pulseNote(noteForButton(b))));
   Object.keys(ccMap).forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>sendControl(el));});
-  function tick(){for(const id of ['A','B']){const d=decks[id];if(d.playing&&d.buffer){const t=currentTime(d);if(d.loop&&d.buffer.duration>0&&t>=Math.max(.1,d.offset+4)){seek(id,d.offset); }else if(t>=d.buffer.duration){d.playing=false;d.offset=0;stopSource(d);}renderDeck(id);if(d.analyser){const a=new Uint8Array(d.analyser.frequencyBinCount);d.analyser.getByteTimeDomainData(a);let sum=0;for(const v of a)sum+=(v-128)**2;$('meter'+id).value=Math.min(1,Math.sqrt(sum/a.length)/70);}}}requestAnimationFrame(tick);}
+  function tick(){for(const id of ['A','B']){const d=decks[id];if(d.playing&&d.buffer){const t=currentTime(d);if(d.loop&&d.buffer.duration>0&&d.loopOut!==null&&t>=d.loopOut){seek(id,d.loopIn); }else if(d.loop&&d.buffer.duration>0&&d.loopOut===null&&t>=Math.max(.1,d.offset+4)){seek(id,d.offset); }else if(t>=d.buffer.duration){d.playing=false;d.offset=0;stopSource(d);}renderDeck(id);if(d.analyser){const a=new Uint8Array(d.analyser.frequencyBinCount);d.analyser.getByteTimeDomainData(a);let sum=0;for(const v of a)sum+=(v-128)**2;$('meter'+id).value=Math.min(1,Math.sqrt(sum/a.length)/70);}}}requestAnimationFrame(tick);}
   window.addEventListener('resize',()=>['A','B'].forEach(renderWave));renderDeck('A');renderDeck('B');requestAnimationFrame(tick);
 })();
