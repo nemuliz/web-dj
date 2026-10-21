@@ -91,7 +91,14 @@
       lastAngle=a; fractional+=delta*4;
       const ticks=Math.trunc(fractional); if(!ticks)return;
       fractional-=ticks;
-      sendMidi(0xB0,cc,Math.max(0,Math.min(127,64+ticks)));
+      // Relative jog deltas are centered at 64. Split large pointer jumps into
+      // multiple valid MIDI relative steps instead of clipping at 0/127.
+      let remaining=ticks;
+      while(remaining!==0) {
+        const step=Math.max(-63,Math.min(63,remaining));
+        sendMidi(0xB0,cc,64+step);
+        remaining-=step;
+      }
       rotation+=delta;
       $('pos'+id).style.transform='rotate('+rotation+'deg)';
     });
