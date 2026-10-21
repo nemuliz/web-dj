@@ -1,21 +1,391 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<MixxxControllerPreset schemaVersion="1" mixxxVersion="2.0">
+<MixxxControllerPreset schemaVersion="1" mixxxVersion="2.6">
   <info>
-    <name>WebDJ Bridge</name>
+    <name>WebDJ Bridge (FLX4-style)</name>
     <author>WebDJ project</author>
-    <description>Generic MIDI mapping for the WebDJ browser controller through a loopMIDI port.</description>
+    <description>Two-deck WebDJ mapping inspired by the Mixxx Pioneer DDJ-FLX4 workflow. Uses generic MIDI from WebDJ over loopMIDI; it does not impersonate Pioneer hardware.</description>
   </info>
   <controller id="WebDJ Bridge">
+    <scriptfiles>
+      <file functionprefix="WebDJBridge" filename="WebDJ-Bridge-script.js"/>
+    </scriptfiles>
     <controls>
-      <control><group>[Channel1]</group><key>play</key><status>0x90</status><midino>0x24</midino><options/></control>
-      <control><group>[Channel2]</group><key>play</key><status>0x90</status><midino>0x25</midino><options/></control>
-      <control><group>[Channel1]</group><key>cue_default</key><status>0x90</status><midino>0x26</midino><options/></control>
-      <control><group>[Channel2]</group><key>cue_default</key><status>0x90</status><midino>0x27</midino><options/></control>
-      <control><group>[Channel1]</group><key>beatsync</key><status>0x90</status><midino>0x28</midino><options/></control>
-      <control><group>[Channel2]</group><key>beatsync</key><status>0x90</status><midino>0x29</midino><options/></control>
-      <control><group>[Channel1]</group><key>volume</key><status>0xB0</status><midino>0x0C</midino><options/></control>
-      <control><group>[Channel2]</group><key>volume</key><status>0xB0</status><midino>0x0D</midino><options/></control>
-      <control><group>[Master]</group><key>crossfader</key><status>0xB0</status><midino>0x0F</midino><options/></control>
+    <control>
+      <description>Deck A PLAY / PAUSE</description>
+      <group>[Channel1]</group>
+      <key>play</key>
+      <status>0x90</status>
+      <midino>0x24</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A CUE</description>
+      <group>[Channel1]</group>
+      <key>cue_default</key>
+      <status>0x90</status>
+      <midino>0x26</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A SYNC</description>
+      <group>[Channel1]</group>
+      <key>beatsync</key>
+      <status>0x90</status>
+      <midino>0x28</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A 2 beat loop toggle</description>
+      <group>[Channel1]</group>
+      <key>beatloop_2_toggle</key>
+      <status>0x90</status>
+      <midino>0x2a</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A pitch reset</description>
+      <group>[Channel1]</group>
+      <key>WebDJBridge.pitchReset</key>
+      <status>0x90</status>
+      <midino>0x2c</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck A headphone cue</description>
+      <group>[Channel1]</group>
+      <key>pfl</key>
+      <status>0x90</status>
+      <midino>0x2e</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A HOT CUE 1</description>
+      <group>[Channel1]</group>
+      <key>hotcue_1_activate</key>
+      <status>0x90</status>
+      <midino>0x30</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A HOT CUE 2</description>
+      <group>[Channel1]</group>
+      <key>hotcue_2_activate</key>
+      <status>0x90</status>
+      <midino>0x31</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A HOT CUE 3</description>
+      <group>[Channel1]</group>
+      <key>hotcue_3_activate</key>
+      <status>0x90</status>
+      <midino>0x32</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A HOT CUE 4</description>
+      <group>[Channel1]</group>
+      <key>hotcue_4_activate</key>
+      <status>0x90</status>
+      <midino>0x33</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A LOOP IN</description>
+      <group>[Channel1]</group>
+      <key>loop_in</key>
+      <status>0x90</status>
+      <midino>0x3a</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A LOOP OUT</description>
+      <group>[Channel1]</group>
+      <key>loop_out</key>
+      <status>0x90</status>
+      <midino>0x3c</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A RELOOP / EXIT</description>
+      <group>[Channel1]</group>
+      <key>reloop_toggle</key>
+      <status>0x90</status>
+      <midino>0x3e</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A jog touch</description>
+      <group>[Channel1]</group>
+      <key>WebDJBridge.jogTouch</key>
+      <status>0x90</status>
+      <midino>0x40</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck A jog turn</description>
+      <group>[Channel1]</group>
+      <key>WebDJBridge.jogTurn</key>
+      <status>0xB0</status>
+      <midino>0x14</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck A pitch</description>
+      <group>[Channel1]</group>
+      <key>WebDJBridge.pitchRate</key>
+      <status>0xB0</status>
+      <midino>0x00</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck A trim</description>
+      <group>[Channel1]</group>
+      <key>WebDJBridge.trim</key>
+      <status>0xB0</status>
+      <midino>0x02</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck A EQ high</description>
+      <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+      <key>parameter3</key>
+      <status>0xB0</status>
+      <midino>0x04</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A EQ mid</description>
+      <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+      <key>parameter2</key>
+      <status>0xB0</status>
+      <midino>0x06</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A EQ low</description>
+      <group>[EqualizerRack1_[Channel1]_Effect1]</group>
+      <key>parameter1</key>
+      <status>0xB0</status>
+      <midino>0x08</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A filter</description>
+      <group>[QuickEffectRack1_[Channel1]]</group>
+      <key>super1</key>
+      <status>0xB0</status>
+      <midino>0x0a</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck A channel fader</description>
+      <group>[Channel1]</group>
+      <key>volume</key>
+      <status>0xB0</status>
+      <midino>0x0c</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B PLAY / PAUSE</description>
+      <group>[Channel2]</group>
+      <key>play</key>
+      <status>0x91</status>
+      <midino>0x25</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B CUE</description>
+      <group>[Channel2]</group>
+      <key>cue_default</key>
+      <status>0x91</status>
+      <midino>0x27</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B SYNC</description>
+      <group>[Channel2]</group>
+      <key>beatsync</key>
+      <status>0x91</status>
+      <midino>0x29</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B 2 beat loop toggle</description>
+      <group>[Channel2]</group>
+      <key>beatloop_2_toggle</key>
+      <status>0x91</status>
+      <midino>0x2b</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B pitch reset</description>
+      <group>[Channel2]</group>
+      <key>WebDJBridge.pitchReset</key>
+      <status>0x91</status>
+      <midino>0x2d</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck B headphone cue</description>
+      <group>[Channel2]</group>
+      <key>pfl</key>
+      <status>0x91</status>
+      <midino>0x2f</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B HOT CUE 1</description>
+      <group>[Channel2]</group>
+      <key>hotcue_1_activate</key>
+      <status>0x91</status>
+      <midino>0x34</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B HOT CUE 2</description>
+      <group>[Channel2]</group>
+      <key>hotcue_2_activate</key>
+      <status>0x91</status>
+      <midino>0x35</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B HOT CUE 3</description>
+      <group>[Channel2]</group>
+      <key>hotcue_3_activate</key>
+      <status>0x91</status>
+      <midino>0x36</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B HOT CUE 4</description>
+      <group>[Channel2]</group>
+      <key>hotcue_4_activate</key>
+      <status>0x91</status>
+      <midino>0x37</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B LOOP IN</description>
+      <group>[Channel2]</group>
+      <key>loop_in</key>
+      <status>0x91</status>
+      <midino>0x3b</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B LOOP OUT</description>
+      <group>[Channel2]</group>
+      <key>loop_out</key>
+      <status>0x91</status>
+      <midino>0x3d</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B RELOOP / EXIT</description>
+      <group>[Channel2]</group>
+      <key>reloop_toggle</key>
+      <status>0x91</status>
+      <midino>0x3f</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B jog touch</description>
+      <group>[Channel2]</group>
+      <key>WebDJBridge.jogTouch</key>
+      <status>0x91</status>
+      <midino>0x41</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck B jog turn</description>
+      <group>[Channel2]</group>
+      <key>WebDJBridge.jogTurn</key>
+      <status>0xB1</status>
+      <midino>0x15</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck B pitch</description>
+      <group>[Channel2]</group>
+      <key>WebDJBridge.pitchRate</key>
+      <status>0xB0</status>
+      <midino>0x01</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck B trim</description>
+      <group>[Channel2]</group>
+      <key>WebDJBridge.trim</key>
+      <status>0xB0</status>
+      <midino>0x03</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck B EQ high</description>
+      <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+      <key>parameter3</key>
+      <status>0xB0</status>
+      <midino>0x05</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B EQ mid</description>
+      <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+      <key>parameter2</key>
+      <status>0xB0</status>
+      <midino>0x07</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B EQ low</description>
+      <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+      <key>parameter1</key>
+      <status>0xB0</status>
+      <midino>0x09</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B filter</description>
+      <group>[QuickEffectRack1_[Channel2]]</group>
+      <key>super1</key>
+      <status>0xB0</status>
+      <midino>0x0b</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Deck B channel fader</description>
+      <group>[Channel2]</group>
+      <key>volume</key>
+      <status>0xB0</status>
+      <midino>0x0d</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Master gain</description>
+      <group>[Master]</group>
+      <key>WebDJBridge.masterGain</key>
+      <status>0xB0</status>
+      <midino>0x0e</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Crossfader</description>
+      <group>[Master]</group>
+      <key>crossfader</key>
+      <status>0xB0</status>
+      <midino>0x0f</midino>
+      <options><Normal/></options>
+    </control>
+    <control>
+      <description>Headphone mix</description>
+      <group>[Master]</group>
+      <key>WebDJBridge.headMix</key>
+      <status>0xB0</status>
+      <midino>0x10</midino>
+      <options><Script-Binding/></options>
+    </control>
     </controls>
     <outputs/>
   </controller>
