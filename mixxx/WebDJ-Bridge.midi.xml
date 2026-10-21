@@ -123,6 +123,14 @@
       <options><Script-Binding/></options>
     </control>
     <control>
+      <description>Deck A jog touch release</description>
+      <group>[Channel1]</group>
+      <key>WebDJBridge.jogTouch</key>
+      <status>0x80</status>
+      <midino>0x40</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
       <description>Deck A jog turn</description>
       <group>[Channel1]</group>
       <key>WebDJBridge.jogTurn</key>
@@ -295,6 +303,14 @@
       <group>[Channel2]</group>
       <key>WebDJBridge.jogTouch</key>
       <status>0x90</status>
+      <midino>0x41</midino>
+      <options><Script-Binding/></options>
+    </control>
+    <control>
+      <description>Deck B jog touch release</description>
+      <group>[Channel2]</group>
+      <key>WebDJBridge.jogTouch</key>
+      <status>0x80</status>
       <midino>0x41</midino>
       <options><Script-Binding/></options>
     </control>
