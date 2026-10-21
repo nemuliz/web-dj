@@ -48,10 +48,45 @@
   }
   document.querySelectorAll('input[type=range]').forEach(el=>{if(['pitchA','pitchB'].includes(el.id))return;el.addEventListener('input',applyMix);});
   document.addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;const id=b.dataset.deck,d=decks[id];switch(b.dataset.action){case'play':play(id);break;case'cue':if(d.playing){d.offset=currentTime(d);d.playing=false;stopSource(d);}else seek(id,d.cue);d.cue=d.offset;renderDeck(id);break;case'sync':{const other=decks[id==='A'?'B':'A'];if(other.buffer&&d.buffer){const bpmFactor=1;d.pitch=other.pitch*bpmFactor;$('pitch'+id).value=d.pitch;$('pitchVal'+id).textContent=d.pitch.toFixed(1)+'%';if(d.source)d.source.playbackRate.value=1+d.pitch/100;}break;}case'loop':d.loop=!d.loop;b.textContent=d.loop?'LOOP ON':'2 BEAT LOOP';b.classList.toggle('active',d.loop);break;case'pad':{const n=Number(b.dataset.pad);if(d.pads[n]===null){d.pads[n]=currentTime(d);b.classList.add('active');}else seek(id,d.pads[n]);break;}case'pitchreset':d.pitch=0;$('pitch'+id).value=0;$('pitchVal'+id).textContent='0.0%';if(d.source)d.source.playbackRate.value=1;break;case'headcue':b.classList.toggle('active');break;}});
-  $('midiConnect').onclick=async()=>{if(!navigator.requestMIDIAccess){$('midiStatus').textContent='Web MIDI非対応';log('このブラウザはWeb MIDI APIに対応していません。');return;}try{midiAccess=await navigator.requestMIDIAccess({sysex:false});$('midiDot').classList.add('on');$('midiStatus').textContent='MIDIアクセス許可済み';const inputs=[...midiAccess.inputs.values()],outputs=[...midiAccess.outputs.values()];log(`MIDI inputs: ${inputs.length}, outputs: ${outputs.length}`);inputs.forEach(input=>{log(`IN: ${input.name}`);input.onmidimessage=e=>{const bytes=[...e.data].map(v=>v.toString(16).padStart(2,'0')).join(' ');log(`${input.name||'MIDI'} ← ${bytes}`);};});outputs.forEach(out=>{log(`OUT: ${out.name}`);if(!selectedOut)selectedOut=out;});midiAccess.onstatechange=()=>log('MIDI device list changed');}catch(err){$('midiStatus').textContent='MIDIアクセス拒否';log(`MIDI error: ${err.message}`);}};
+  const midiInputSelect=$('midiInputSelect'), midiOutputSelect=$('midiOutputSelect');
+  function bindMidiInput() {
+    if(!midiAccess)return;
+    for(const input of midiAccess.inputs.values()) input.onmidimessage=null;
+    const input=midiAccess.inputs.get(midiInputSelect.value);
+    if(input) input.onmidimessage=e=>{
+      const bytes=[...e.data].map(v=>v.toString(16).padStart(2,'0')).join(' ');
+      log(`${input.name||'MIDI'} ← ${bytes}`);
+    };
+  }
+  function refreshMidiPorts() {
+    if(!midiAccess)return;
+    const oldIn=midiInputSelect.value,oldOut=midiOutputSelect.value;
+    midiInputSelect.replaceChildren(new Option('未選択',''));
+    midiOutputSelect.replaceChildren(new Option('未選択',''));
+    for(const input of midiAccess.inputs.values())midiInputSelect.add(new Option(input.name||input.id,input.id));
+    for(const output of midiAccess.outputs.values())midiOutputSelect.add(new Option(output.name||output.id,output.id));
+    if([...midiAccess.inputs.keys()].includes(oldIn))midiInputSelect.value=oldIn;
+    if([...midiAccess.outputs.keys()].includes(oldOut))midiOutputSelect.value=oldOut;
+    if(!midiInputSelect.value&&midiAccess.inputs.size)midiInputSelect.value=midiAccess.inputs.keys().next().value;
+    if(!midiOutputSelect.value&&midiAccess.outputs.size)midiOutputSelect.value=midiAccess.outputs.keys().next().value;
+    selectedOut=midiAccess.outputs.get(midiOutputSelect.value)||null;
+    bindMidiInput();
+    log(`MIDI ports refreshed: ${midiAccess.inputs.size} inputs, ${midiAccess.outputs.size} outputs`);
+  }
+  midiInputSelect.addEventListener('change',bindMidiInput);
+  midiOutputSelect.addEventListener('change',()=>{selectedOut=midiAccess?.outputs.get(midiOutputSelect.value)||null;log(selectedOut?`MIDI OUT selected: ${selectedOut.name}`:'MIDI OUT deselected');});
+  $('midiConnect').onclick=async()=>{
+    if(!navigator.requestMIDIAccess){$('midiStatus').textContent='Web MIDI非対応';log('このブラウザはWeb MIDI APIに対応していません。');return;}
+    try{
+      midiAccess=await navigator.requestMIDIAccess({sysex:false});
+      $('midiDot').classList.add('on');$('midiStatus').textContent='MIDIアクセス許可済み';
+      refreshMidiPorts();
+      midiAccess.onstatechange=refreshMidiPorts;
+    }catch(err){$('midiStatus').textContent='MIDIアクセス拒否';log(`MIDI error: ${err.message}`);}
+  };
   function sendMidi(status,data1,data2){if(selectedOut)selectedOut.send([status,data1,data2]);}
   // Demo MIDI feedback for testing only; not a Rekordbox/Mixxx virtual port.
-  document.querySelectorAll('button[data-action]').forEach((b,i)=>b.addEventListener('click',()=>sendMidi(0x90,(i+1)&127,127)));
+  document.querySelectorAll('button[data-action]').forEach((b,i)=>b.addEventListener('click',()=>{const note=(i+1)&127;sendMidi(0x90,note,127);setTimeout(()=>sendMidi(0x80,note,0),120);}));
   function tick(){for(const id of ['A','B']){const d=decks[id];if(d.playing&&d.buffer){const t=currentTime(d);if(d.loop&&d.buffer.duration>0&&t>=Math.max(.1,d.offset+4)){seek(id,d.offset); }else if(t>=d.buffer.duration){d.playing=false;d.offset=0;stopSource(d);}renderDeck(id);if(d.analyser){const a=new Uint8Array(d.analyser.frequencyBinCount);d.analyser.getByteTimeDomainData(a);let sum=0;for(const v of a)sum+=(v-128)**2;$('meter'+id).value=Math.min(1,Math.sqrt(sum/a.length)/70);}}}requestAnimationFrame(tick);}
   window.addEventListener('resize',()=>['A','B'].forEach(renderWave));renderDeck('A');renderDeck('B');requestAnimationFrame(tick);
 })();
