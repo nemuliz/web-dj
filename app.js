@@ -84,9 +84,38 @@
       midiAccess.onstatechange=refreshMidiPorts;
     }catch(err){$('midiStatus').textContent='MIDIアクセス拒否';log(`MIDI error: ${err.message}`);}
   };
-  function sendMidi(status,data1,data2){if(selectedOut)selectedOut.send([status,data1,data2]);}
-  // Demo MIDI feedback for testing only; not a Rekordbox/Mixxx virtual port.
-  document.querySelectorAll('button[data-action]').forEach((b,i)=>b.addEventListener('click',()=>{const note=(i+1)&127;sendMidi(0x90,note,127);setTimeout(()=>sendMidi(0x80,note,0),120);}));
+  function sendMidi(status,data1,data2){
+    if(!selectedOut)return;
+    try{selectedOut.send([status,data1,data2]);}
+    catch(err){log('MIDI送信エラー: '+err.message);}
+  }
+  // Generic MIDI mapping on channel 1; not a Pioneer hardware protocol.
+  const noteMap={play:{A:36,B:37},cue:{A:38,B:39},sync:{A:40,B:41},loop:{A:42,B:43},pitchreset:{A:44,B:45},headcue:{A:46,B:47}};
+  function noteForButton(b){
+    const action=b.dataset.action,deck=b.dataset.deck||'A';
+    if(action==='pad')return 48+(deck==='B'?4:0)+Number(b.dataset.pad||0);
+    return noteMap[action]?.[deck]??null;
+  }
+  function pulseNote(note){
+    if(note===null||note===undefined)return;
+    sendMidi(0x90,note,127);
+    window.setTimeout(()=>sendMidi(0x80,note,0),100);
+  }
+  const ccMap={pitchA:0,pitchB:1,gainA:2,gainB:3,hiA:4,hiB:5,midA:6,midB:7,lowA:8,lowB:9,filterA:10,filterB:11,faderA:12,faderB:13,master:14,crossfader:15,headphones:16};
+  function sendControl(el){
+    const cc=ccMap[el.id];if(cc===undefined)return;
+    const min=Number(el.min||0),max=Number(el.max||127),value=Number(el.value);
+    sendMidi(0xB0,cc,Math.max(0,Math.min(127,Math.round((value-min)/(max-min||1)*127))));
+  }
+  document.querySelectorAll('button[data-action]').forEach(b=>b.addEventListener('click',()=>pulseNote(noteForButton(b))));
+  Object.keys(ccMap).forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>sendControl(el));});
+  for(const id of ['A','B']){
+    $('jog'+id).addEventListener('pointermove',e=>{
+      if(!decks[id].jogDown)return;
+      const cc=id==='A'?20:21;
+      sendMidi(0xB0,cc,Math.max(0,Math.min(127,64+Math.round((e.movementX||0)*2))));
+    });
+  }
   function tick(){for(const id of ['A','B']){const d=decks[id];if(d.playing&&d.buffer){const t=currentTime(d);if(d.loop&&d.buffer.duration>0&&t>=Math.max(.1,d.offset+4)){seek(id,d.offset); }else if(t>=d.buffer.duration){d.playing=false;d.offset=0;stopSource(d);}renderDeck(id);if(d.analyser){const a=new Uint8Array(d.analyser.frequencyBinCount);d.analyser.getByteTimeDomainData(a);let sum=0;for(const v of a)sum+=(v-128)**2;$('meter'+id).value=Math.min(1,Math.sqrt(sum/a.length)/70);}}}requestAnimationFrame(tick);}
   window.addEventListener('resize',()=>['A','B'].forEach(renderWave));renderDeck('A');renderDeck('B');requestAnimationFrame(tick);
 })();
