@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MixxxControllerPreset schemaVersion="1" mixxxVersion="2.0">
+  <info>
+    <name>WebDJ Bridge</name>
+    <author>WebDJ project</author>
+    <description>Generic MIDI mapping for the WebDJ browser controller through a loopMIDI port.</description>
+  </info>
+  <controller id="WebDJ Bridge">
+    <controls>
+      <control><group>[Channel1]</group><key>play</key><status>0x90</status><midino>0x24</midino><options/></control>
+      <control><group>[Channel2]</group><key>play</key><status>0x90</status><midino>0x25</midino><options/></control>
+      <control><group>[Channel1]</group><key>cue_default</key><status>0x90</status><midino>0x26</midino><options/></control>
+      <control><group>[Channel2]</group><key>cue_default</key><status>0x90</status><midino>0x27</midino><options/></control>
+      <control><group>[Channel1]</group><key>beatsync</key><status>0x90</status><midino>0x28</midino><options/></control>
+      <control><group>[Channel2]</group><key>beatsync</key><status>0x90</status><midino>0x29</midino><options/></control>
+      <control><group>[Channel1]</group><key>volume</key><status>0xB0</status><midino>0x0C</midino><options/></control>
+      <control><group>[Channel2]</group><key>volume</key><status>0xB0</status><midino>0x0D</midino><options/></control>
+      <control><group>[Master]</group><key>crossfader</key><status>0xB0</status><midino>0x0F</midino><options/></control>
+    </controls>
+    <outputs/>
+  </controller>
+</MixxxControllerPreset>
