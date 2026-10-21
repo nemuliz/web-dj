@@ -81,5 +81,5 @@ Mixxx標準のDDJ-FLX4マッピングは実機のMIDIチャンネル、ノート
 | EQ HI/MID/LOW | CC 4–9 | Equalizer effect parameters |
 | Filter | CC 10/11 | Quick Effect super1 |
 | Channel fader | CC 12/13 | Volume |
-| Master / Crossfader / Head mix | CC 14–16 | Master / Crossfader / Head mix |
+| Master / Crossfader / Headphone mix | CC 14–16 | Master gain / Crossfader / Head mix |
 
