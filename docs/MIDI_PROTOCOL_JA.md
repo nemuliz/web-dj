@@ -26,6 +26,10 @@ loopMIDIはOS上の仮想MIDIポートを作り、WebDJの出力をDJソフト�
 | Deck A/B headphone CUE | Note On/Off | 46 / 47 |
 | Deck A Hot Cue 1–4 | Note On/Off | 48–51 |
 | Deck B Hot Cue 1–4 | Note On/Off | 52–55 |
+| Deck A/B LOOP IN | Note On/Off | 58 / 59 |
+| Deck A/B LOOP OUT | Note On/Off | 60 / 61 |
+| Deck A/B RELOOP / EXIT | Note On/Off | 62 / 63 |
+| Deck A/B jog touch | Note On/Off | 64 / 65 |
 | Pitch A/B | CC | 0 / 1 |
 | Gain A/B | CC | 2 / 3 |
 | HI A/B | CC | 4 / 5 |
@@ -47,7 +51,7 @@ CC値は各UIコントロールの最小値〜最大値を0〜127に正規化し
 ## Mixxxでの確認
 
 - Mixxx起動後に仮想ポートを作った場合は、Mixxxを再起動してから `Preferences → Controllers` を確認してください。
-- このリポジトリの `mixxx/WebDJ-Bridge.midi.xml` は、`WebDJ Bridge` という名前のポート向けの基本マッピングです。Windowsの `%LOCALAPPDATA%\\Mixxx\\controllers` フォルダーにコピーし、Mixxxを再起動して `Preferences → Controllers` で `WebDJ Bridge` を有効にしてください。既にMixxxが起動中なら、ポート作成後に再起動します。
+- このリポジトリの `mixxx/WebDJ-Bridge.midi.xml` と `mixxx/WebDJ-Bridge-script.js` はセットで使います。両方をWindowsの `%LOCALAPPDATA%\\Mixxx\\controllers` フォルダーにコピーし、Mixxxを完全に再起動して `Preferences → Controllers` で `WebDJ Bridge (FLX4-style)` を有効にしてください。XMLだけではジョグ・ピッチ等のスクリプト機能が動きません。既にMixxxが起動中なら、ポート作成後に再起動します。
 - コントローラー一覧に表示されない場合は、まずMIDIモニターで `WebDJ Bridge` にイベントが届いているか切り分けてください。
 
 ## トラブルシューティングと制約
