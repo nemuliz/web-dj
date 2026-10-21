@@ -9,6 +9,10 @@ DDJ-FLX4 / DDJ-400 inspired, browser-based two-deck DJ interface. Static files o
 - Web MIDI API input monitoring and MIDI output test messages
 - No build step or dependencies
 
+## Japanese development notes
+- [Architecture and compatibility notes](docs/ARCHITECTURE_JA.md)
+- [Generic MIDI protocol and DJ software integration](docs/MIDI_PROTOCOL_JA.md)
+
 ## Run locally
 Use a local HTTP server or publish the repository with GitHub Pages. Web MIDI generally requires a secure context (HTTPS or localhost), and browser support varies. Click **オーディオ有効化** before playback and **MIDI接続** to grant access.
 
