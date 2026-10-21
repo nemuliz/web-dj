@@ -47,7 +47,7 @@ CC値は各UIコントロールの最小値〜最大値を0〜127に正規化し
 ## Mixxxでの確認
 
 - Mixxx起動後に仮想ポートを作った場合は、Mixxxを再起動してから `Preferences → Controllers` を確認してください。
-- `WebDJ Bridge` が見えても、コントローラーとして操作するには対応マッピングが必要です。汎用MIDI割り当て、または独自コントローラーマッピングを設定してください。
+- このリポジトリの `mixxx/WebDJ-Bridge.midi.xml` は、`WebDJ Bridge` という名前のポート向けの基本マッピングです。Windowsの `%LOCALAPPDATA%\\Mixxx\\controllers` フォルダーにコピーし、Mixxxを再起動して `Preferences → Controllers` で `WebDJ Bridge` を有効にしてください。既にMixxxが起動中なら、ポート作成後に再起動します。
 - コントローラー一覧に表示されない場合は、まずMIDIモニターで `WebDJ Bridge` にイベントが届いているか切り分けてください。
 
 ## トラブルシューティングと制約
