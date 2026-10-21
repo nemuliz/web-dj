@@ -1,10 +1,7 @@
 /* WebDJ MIDI-only controller for Mixxx via loopMIDI. Browser audio is intentionally disabled. */
 (() => {
   const $ = id => document.getElementById(id);
-  // Remove all browser-side audio/file playback UI; Mixxx handles audio.
-  $('audioEnable')?.remove();
-  document.querySelectorAll('input[type="file"], .wavebox, .library, .vu').forEach(el => el.remove());
-  document.querySelectorAll('.deck-head .load-btn').forEach(el => el.remove());
+  // Remove only browser audio/file-loading UI. Keep deck controls and jog UI.
   document.querySelectorAll('.deck-head .track-name').forEach((el,i) => { el.textContent = i ? 'MIDI CONTROLLER · MIXXX DECK 2' : 'MIDI CONTROLLER · MIXXX DECK 1'; });
   const footer = document.querySelector('footer');
   if (footer) footer.textContent = 'WEBDJ MIDI Controller · loopMIDI + Mixxx · Browser audio disabled';
