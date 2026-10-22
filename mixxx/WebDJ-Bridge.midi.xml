@@ -418,8 +418,10 @@
            preventing loopMIDI echo from being mistaken for actual Mixxx state. -->
       <output><description>Deck A play state feedback</description><group>[Channel1]</group><key>play_indicator</key><status>0x90</status><midino>0x50</midino><on>0x7F</on><off>0x00</off></output>
       <output><description>Deck B play state feedback</description><group>[Channel2]</group><key>play_indicator</key><status>0x90</status><midino>0x51</midino><on>0x7F</on><off>0x00</off></output>
-      <output><description>Deck A cue indicator feedback</description><group>[Channel1]</group><key>cue_indicator</key><status>0x90</status><midino>0x52</midino><on>0x7F</on><off>0x00</off></output>
-      <output><description>Deck B cue indicator feedback</description><group>[Channel2]</group><key>cue_indicator</key><status>0x90</status><midino>0x53</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A CUE held state feedback</description><group>[Channel1]</group><key>cue_default</key><status>0x90</status><midino>0x52</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B CUE held state feedback</description><group>[Channel2]</group><key>cue_default</key><status>0x90</status><midino>0x53</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A cue indicator feedback</description><group>[Channel1]</group><key>cue_indicator</key><status>0x90</status><midino>0x56</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B cue indicator feedback</description><group>[Channel2]</group><key>cue_indicator</key><status>0x90</status><midino>0x57</midino><on>0x7F</on><off>0x00</off></output>
       <output><description>Deck A sync state feedback</description><group>[Channel1]</group><key>sync_enabled</key><status>0x90</status><midino>0x54</midino><on>0x7F</on><off>0x00</off></output>
       <output><description>Deck B sync state feedback</description><group>[Channel2]</group><key>sync_enabled</key><status>0x90</status><midino>0x55</midino><on>0x7F</on><off>0x00</off></output>
       <output><description>Deck A HOT CUE 1 assigned state feedback</description><group>[Channel1]</group><key>hotcue_1_enabled</key><status>0x90</status><midino>0x58</midino><on>0x7F</on><off>0x00</off></output>
