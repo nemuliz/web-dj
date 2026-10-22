@@ -158,20 +158,42 @@
     const value=Number(el.value);
     sendMidi(0xB0,cc,Math.max(0,Math.min(127,Math.round((value-min)/(max-min||1)*127))));
   }
-  document.querySelectorAll('button[data-action]').forEach(b=>b.addEventListener('click',()=>{
-    const action=b.dataset.action, deck=b.dataset.deck;
-    pulseNote(noteForButton(b));
-    // CUE is a momentary action; flash it briefly instead of inventing a persistent state.
-    if (action === 'headcue') {
-      b.classList.add('feedback-flash');
-      window.setTimeout(() => b.classList.remove('feedback-flash'), 180);
+  // CUE and HOT CUE are hold-sensitive Mixxx controls: send the press and
+  // release edges from pointer events instead of an arbitrary short pulse.
+  document.querySelectorAll('button[data-action]').forEach(b=>{
+    const action=b.dataset.action, momentary=action==='cue'||action==='pad';
+    if(momentary) {
+      let heldNote=null;
+      const release=()=>{
+        if(heldNote===null)return;
+        sendMidi(0x80,heldNote,0);
+        heldNote=null;
+      };
+      b.addEventListener('pointerdown',e=>{
+        e.preventDefault();
+        if(heldNote!==null)return;
+        heldNote=noteForButton(b);
+        if(heldNote!==null)sendMidi(0x90,heldNote,127);
+        try{b.setPointerCapture(e.pointerId);}catch(_){}
+      });
+      b.addEventListener('pointerup',release);
+      b.addEventListener('pointercancel',release);
+      b.addEventListener('lostpointercapture',release);
     }
-    // Persistent PLAY/SYNC/HOT CUE appearance is driven by Mixxx feedback.
-    if(action==='pitchreset') {
-      const slider=$('pitch'+deck);
-      if(slider){slider.value=0;slider.dispatchEvent(new Event('input',{bubbles:true}));}
-    }
-  }));
+    b.addEventListener('click',()=>{
+      const deck=b.dataset.deck;
+      if(!momentary)pulseNote(noteForButton(b));
+      // Persistent PLAY/SYNC/HOT CUE appearance is driven by Mixxx feedback.
+      if (action === 'headcue') {
+        b.classList.add('feedback-flash');
+        window.setTimeout(() => b.classList.remove('feedback-flash'), 180);
+      }
+      if(action==='pitchreset') {
+        const slider=$('pitch'+deck);
+        if(slider){slider.value=0;slider.dispatchEvent(new Event('input',{bubbles:true}));}
+      }
+    });
+  });
   Object.keys(ccMap).forEach(id=>{
     const el=$(id); if(!el)return;
     el.addEventListener('input',()=>{
