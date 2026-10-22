@@ -67,6 +67,18 @@
     } catch (err) { log('LAN接続エラー: ' + err.message); }
   }
   $('lanConnect').addEventListener('click', connectLan);
+  const fullscreenBtn = $('fullscreenBtn');
+  async function toggleFullscreen() {
+    try {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+      else await document.exitFullscreen();
+    } catch (err) { log('全画面表示にできません: ' + err.message); }
+  }
+  fullscreenBtn.addEventListener('click', toggleFullscreen);
+  document.addEventListener('fullscreenchange', () => {
+    fullscreenBtn.textContent = document.fullscreenElement ? '全画面解除' : '全画面';
+    document.body.classList.toggle('is-fullscreen', !!document.fullscreenElement);
+  });
   const noteMap = {
     play:{A:36,B:37},cue:{A:38,B:39},sync:{A:40,B:41},loop:{A:42,B:43},
     pitchreset:{A:44,B:45},headcue:{A:46,B:47},loopin:{A:58,B:59},
