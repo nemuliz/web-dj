@@ -70,14 +70,25 @@
   const fullscreenBtn = $('fullscreenBtn');
   async function toggleFullscreen() {
     try {
-      if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
-      else await document.exitFullscreen();
-    } catch (err) { log('全画面表示にできません: ' + err.message); }
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        return;
+      }
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+        return;
+      }
+      log('このブラウザは全画面APIに非対応です。iPadでは共有メニューから「ホーム画面に追加」して起動すると、ブラウザのバーを隠して使えます。');
+    } catch (err) {
+      log('全画面表示にできません: ' + err.message + '。iPadでは「ホーム画面に追加」からの起動もお試しください。');
+    }
   }
   fullscreenBtn.addEventListener('click', toggleFullscreen);
   document.addEventListener('fullscreenchange', () => {
-    fullscreenBtn.textContent = document.fullscreenElement ? '全画面解除' : '全画面';
-    document.body.classList.toggle('is-fullscreen', !!document.fullscreenElement);
+    const active = !!document.fullscreenElement;
+    fullscreenBtn.textContent = active ? '全画面解除' : '全画面';
+    fullscreenBtn.setAttribute('aria-label', active ? '全画面表示を解除' : '全画面表示');
+    document.body.classList.toggle('is-fullscreen', active);
   });
   const noteMap = {
     play:{A:36,B:37},cue:{A:38,B:39},sync:{A:40,B:41},loop:{A:42,B:43},
