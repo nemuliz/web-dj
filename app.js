@@ -11,14 +11,62 @@
     const row = document.createElement('div'); row.className = 'midi-line'; row.textContent = message;
     el.prepend(row); while (el.children.length > 70) el.lastChild.remove();
   };
-  let midiAccess = null, selectedOut = null;
+  let midiAccess = null, selectedOut = null, lanSocket = null, lanAuthenticated = false;
   function sendMidi(status, data1, data2) {
-    if (!selectedOut) { log('MIDI OUT未選択: loopMIDIのWebDJ Bridgeを選択してください'); return; }
+    const data = [status, data1, data2];
+    if (lanSocket && lanSocket.readyState === WebSocket.OPEN && lanAuthenticated) {
+      lanSocket.send(JSON.stringify({type:'midi', data}));
+      log('LAN OUT ' + data.map(v=>v.toString(16).padStart(2,'0')).join(' '));
+      return;
+    }
+    if (!selectedOut) { log('MIDI OUT未選択: LAN接続、またはloopMIDIのWebDJ Bridgeを選択してください'); return; }
     try {
-      selectedOut.send([status,data1,data2]);
-      log('OUT ' + [status,data1,data2].map(v=>v.toString(16).padStart(2,'0')).join(' '));
+      selectedOut.send(data);
+      log('OUT ' + data.map(v=>v.toString(16).padStart(2,'0')).join(' '));
     } catch (err) { log('MIDI送信エラー: ' + err.message); }
   }
+
+  function connectLan() {
+    if (lanSocket && (lanSocket.readyState === WebSocket.OPEN || lanSocket.readyState === WebSocket.CONNECTING)) {
+      lanSocket.close(); return;
+    }
+    if (location.protocol === 'https:') {
+      log('LAN接続はWindows PC上の start-lan.bat が配信する http://PCのIP:8765/ を開いてください。GitHub PagesからのLAN接続は利用できません。');
+      return;
+    }
+    const token = window.prompt('Windows側のWebDJ Bridgeコンソールに表示された接続コードを入力してください:');
+    if (!token) return;
+    try {
+      lanSocket = new WebSocket('ws://' + location.host + '/midi');
+      lanAuthenticated = false;
+      $('lanConnect').textContent = '接続中…';
+      lanSocket.onopen = () => lanSocket.send(JSON.stringify({type:'auth', token}));
+      lanSocket.onmessage = event => {
+        let message;
+        try { message = JSON.parse(event.data); } catch (_) { return; }
+        if (message.type === 'authenticated') {
+          lanAuthenticated = true;
+          $('midiDot').classList.add('on');
+          $('midiStatus').textContent = 'LAN MIDI接続済み';
+          $('lanConnect').textContent = 'LAN切断';
+          log('LAN MIDI接続成功: Windows側でMixxx用MIDIポートへ転送します');
+        } else if (message.type === 'error') {
+          log('LANエラー: ' + message.message);
+        }
+      };
+      lanSocket.onerror = () => log('LAN接続エラー: Windows側サーバー、IPアドレス、ファイアウォールを確認してください。');
+      lanSocket.onclose = () => {
+        lanAuthenticated = false;
+        $('lanConnect').textContent = 'LAN接続';
+        if (!selectedOut) {
+          $('midiDot').classList.remove('on');
+          $('midiStatus').textContent = 'MIDI未接続';
+        }
+        log('LAN MIDI切断');
+      };
+    } catch (err) { log('LAN接続エラー: ' + err.message); }
+  }
+  $('lanConnect').addEventListener('click', connectLan);
   const noteMap = {
     play:{A:36,B:37},cue:{A:38,B:39},sync:{A:40,B:41},loop:{A:42,B:43},
     pitchreset:{A:44,B:45},headcue:{A:46,B:47},loopin:{A:58,B:59},
