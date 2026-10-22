@@ -21,18 +21,18 @@
     <control>
       <description>Deck A CUE</description>
       <group>[Channel1]</group>
-      <key>cue_default</key>
+      <key>WebDJBridge.cue</key>
       <status>0x90</status>
       <midino>0x26</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck A SYNC</description>
       <group>[Channel1]</group>
-      <key>beatsync</key>
+      <key>WebDJBridge.sync</key>
       <status>0x90</status>
       <midino>0x28</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck A 2 beat loop toggle</description>
@@ -61,34 +61,34 @@
     <control>
       <description>Deck A HOT CUE 1</description>
       <group>[Channel1]</group>
-      <key>hotcue_1_activate</key>
+      <key>WebDJBridge.hotcue1</key>
       <status>0x90</status>
       <midino>0x30</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck A HOT CUE 2</description>
       <group>[Channel1]</group>
-      <key>hotcue_2_activate</key>
+      <key>WebDJBridge.hotcue2</key>
       <status>0x90</status>
       <midino>0x31</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck A HOT CUE 3</description>
       <group>[Channel1]</group>
-      <key>hotcue_3_activate</key>
+      <key>WebDJBridge.hotcue3</key>
       <status>0x90</status>
       <midino>0x32</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck A HOT CUE 4</description>
       <group>[Channel1]</group>
-      <key>hotcue_4_activate</key>
+      <key>WebDJBridge.hotcue4</key>
       <status>0x90</status>
       <midino>0x33</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck A LOOP IN</description>
@@ -205,18 +205,18 @@
     <control>
       <description>Deck B CUE</description>
       <group>[Channel2]</group>
-      <key>cue_default</key>
+      <key>WebDJBridge.cue</key>
       <status>0x90</status>
       <midino>0x27</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck B SYNC</description>
       <group>[Channel2]</group>
-      <key>beatsync</key>
+      <key>WebDJBridge.sync</key>
       <status>0x90</status>
       <midino>0x29</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck B 2 beat loop toggle</description>
@@ -245,34 +245,34 @@
     <control>
       <description>Deck B HOT CUE 1</description>
       <group>[Channel2]</group>
-      <key>hotcue_1_activate</key>
+      <key>WebDJBridge.hotcue1</key>
       <status>0x90</status>
       <midino>0x34</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck B HOT CUE 2</description>
       <group>[Channel2]</group>
-      <key>hotcue_2_activate</key>
+      <key>WebDJBridge.hotcue2</key>
       <status>0x90</status>
       <midino>0x35</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck B HOT CUE 3</description>
       <group>[Channel2]</group>
-      <key>hotcue_3_activate</key>
+      <key>WebDJBridge.hotcue3</key>
       <status>0x90</status>
       <midino>0x36</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck B HOT CUE 4</description>
       <group>[Channel2]</group>
-      <key>hotcue_4_activate</key>
+      <key>WebDJBridge.hotcue4</key>
       <status>0x90</status>
       <midino>0x37</midino>
-      <options><Normal/></options>
+      <options><Script-Binding/></options>
     </control>
     <control>
       <description>Deck B LOOP IN</description>
@@ -402,7 +402,30 @@
       <midino>0x10</midino>
       <options><Script-Binding/></options>
     </control>
+      <control><description>Deck A CUE release</description><group>[Channel1]</group><key>WebDJBridge.cue</key><status>0x80</status><midino>0x26</midino><options><Script-Binding/></options></control>
+      <control><description>Deck A HOT CUE 1 release</description><group>[Channel1]</group><key>WebDJBridge.hotcue1</key><status>0x80</status><midino>0x30</midino><options><Script-Binding/></options></control>
+      <control><description>Deck A HOT CUE 2 release</description><group>[Channel1]</group><key>WebDJBridge.hotcue2</key><status>0x80</status><midino>0x31</midino><options><Script-Binding/></options></control>
+      <control><description>Deck A HOT CUE 3 release</description><group>[Channel1]</group><key>WebDJBridge.hotcue3</key><status>0x80</status><midino>0x32</midino><options><Script-Binding/></options></control>
+      <control><description>Deck A HOT CUE 4 release</description><group>[Channel1]</group><key>WebDJBridge.hotcue4</key><status>0x80</status><midino>0x33</midino><options><Script-Binding/></options></control>
+      <control><description>Deck B CUE release</description><group>[Channel2]</group><key>WebDJBridge.cue</key><status>0x80</status><midino>0x27</midino><options><Script-Binding/></options></control>
+      <control><description>Deck B HOT CUE 1 release</description><group>[Channel2]</group><key>WebDJBridge.hotcue1</key><status>0x80</status><midino>0x34</midino><options><Script-Binding/></options></control>
+      <control><description>Deck B HOT CUE 2 release</description><group>[Channel2]</group><key>WebDJBridge.hotcue2</key><status>0x80</status><midino>0x35</midino><options><Script-Binding/></options></control>
+      <control><description>Deck B HOT CUE 3 release</description><group>[Channel2]</group><key>WebDJBridge.hotcue3</key><status>0x80</status><midino>0x36</midino><options><Script-Binding/></options></control>
+      <control><description>Deck B HOT CUE 4 release</description><group>[Channel2]</group><key>WebDJBridge.hotcue4</key><status>0x80</status><midino>0x37</midino><options><Script-Binding/></options></control>
     </controls>
-    <outputs/>
+    <outputs>
+      <output><description>Deck A play state</description><group>[Channel1]</group><key>play_indicator</key><status>0x90</status><midino>0x24</midino><options><Normal/></options></output>
+      <output><description>Deck A sync state</description><group>[Channel1]</group><key>sync_enabled</key><status>0x90</status><midino>0x28</midino><options><Normal/></options></output>
+      <output><description>Deck A HOT CUE 1 assigned state</description><group>[Channel1]</group><key>hotcue_1_enabled</key><status>0x90</status><midino>0x30</midino><options><Normal/></options></output>
+      <output><description>Deck A HOT CUE 2 assigned state</description><group>[Channel1]</group><key>hotcue_2_enabled</key><status>0x90</status><midino>0x31</midino><options><Normal/></options></output>
+      <output><description>Deck A HOT CUE 3 assigned state</description><group>[Channel1]</group><key>hotcue_3_enabled</key><status>0x90</status><midino>0x32</midino><options><Normal/></options></output>
+      <output><description>Deck A HOT CUE 4 assigned state</description><group>[Channel1]</group><key>hotcue_4_enabled</key><status>0x90</status><midino>0x33</midino><options><Normal/></options></output>
+      <output><description>Deck B play state</description><group>[Channel2]</group><key>play_indicator</key><status>0x90</status><midino>0x25</midino><options><Normal/></options></output>
+      <output><description>Deck B sync state</description><group>[Channel2]</group><key>sync_enabled</key><status>0x90</status><midino>0x29</midino><options><Normal/></options></output>
+      <output><description>Deck B HOT CUE 1 assigned state</description><group>[Channel2]</group><key>hotcue_1_enabled</key><status>0x90</status><midino>0x34</midino><options><Normal/></options></output>
+      <output><description>Deck B HOT CUE 2 assigned state</description><group>[Channel2]</group><key>hotcue_2_enabled</key><status>0x90</status><midino>0x35</midino><options><Normal/></options></output>
+      <output><description>Deck B HOT CUE 3 assigned state</description><group>[Channel2]</group><key>hotcue_3_enabled</key><status>0x90</status><midino>0x36</midino><options><Normal/></options></output>
+      <output><description>Deck B HOT CUE 4 assigned state</description><group>[Channel2]</group><key>hotcue_4_enabled</key><status>0x90</status><midino>0x37</midino><options><Normal/></options></output>
+    </outputs>
   </controller>
 </MixxxControllerPreset>
