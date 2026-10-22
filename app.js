@@ -111,13 +111,21 @@
   // essential because loopMIDI echoes input traffic to readers of the same port.
   const feedbackNotes = {
     80:{action:'play',deck:'A'},81:{action:'play',deck:'B'},
-    82:{action:'cue',deck:'A'},83:{action:'cue',deck:'B'},
+    82:{action:'cuehold',deck:'A'},83:{action:'cuehold',deck:'B'},
     84:{action:'sync',deck:'A'},85:{action:'sync',deck:'B'},
+    86:{action:'cue',deck:'A'},87:{action:'cue',deck:'B'},
     88:{action:'pad',deck:'A',pad:0},89:{action:'pad',deck:'A',pad:1},
     90:{action:'pad',deck:'A',pad:2},91:{action:'pad',deck:'A',pad:3},
     92:{action:'pad',deck:'B',pad:0},93:{action:'pad',deck:'B',pad:1},
     94:{action:'pad',deck:'B',pad:2},95:{action:'pad',deck:'B',pad:3}
   };
+  const cueFeedback = {A:{held:false,ready:false},B:{held:false,ready:false}};
+  function renderCueButton(deck) {
+    const button=document.querySelector('[data-action="cue"][data-deck="'+deck+'"]');
+    if(!button)return;
+    const state=cueFeedback[deck];
+    button.textContent=state.held?'CUE HOLD':state.ready?'CUE READY':'CUE';
+  }
   function applyMixxxMidi(data) {
     if (!data || data.length < 3) return;
     const status = Number(data[0]), note = Number(data[1]), value = Number(data[2]);
@@ -127,9 +135,20 @@
     const on = (status & 0xF0) === 0x90 && value > 0;
     const button = document.querySelector('[data-action="'+info.action+'"][data-deck="'+info.deck+'"]'+(info.pad === undefined ? '' : '[data-pad="'+info.pad+'"]'));
     if (!button) return;
+    if (info.action === 'cuehold') {
+      cueFeedback[info.deck].held=on;
+      button.classList.toggle('active',on);
+      renderCueButton(info.deck);
+      return;
+    }
+    if (info.action === 'cue') {
+      cueFeedback[info.deck].ready=on;
+      button.classList.toggle('cue-set',on);
+      renderCueButton(info.deck);
+      return;
+    }
     button.classList.toggle('active', on);
     if (info.action === 'play') button.textContent = on ? 'Ⅱ PLAYING' : '▶ PLAY';
-    if (info.action === 'cue') button.textContent = on ? 'CUE READY' : 'CUE';
     if (info.action === 'sync') {
       button.classList.toggle('sync-on', on);
       button.textContent = on ? 'SYNC ON' : 'SYNC';
