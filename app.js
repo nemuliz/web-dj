@@ -50,6 +50,8 @@
           $('midiStatus').textContent = 'LAN MIDI接続済み';
           $('lanConnect').textContent = 'LAN切断';
           log('LAN MIDI接続成功: Windows側でMixxx用MIDIポートへ転送します');
+        } else if (message.type === 'mixxx_state') {
+          applyMixxxMidi(message.data);
         } else if (message.type === 'error') {
           log('LANエラー: ' + message.message);
         }
@@ -90,6 +92,51 @@
     fullscreenBtn.setAttribute('aria-label', active ? '全画面表示を解除' : '全画面表示');
     document.body.classList.toggle('is-fullscreen', active);
   });
+
+  // Tab switching keeps the controller usable on smaller viewports without scrolling.
+  const main = document.querySelector('main');
+  document.querySelectorAll('[data-tab-target]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const name = tab.dataset.tabTarget;
+      main.dataset.tab = name;
+      document.querySelectorAll('[data-tab-target]').forEach(item => {
+        const active = item === tab;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-selected', String(active));
+      });
+    });
+  });
+
+  const feedbackNotes = {
+    36:{action:'play',deck:'A'},37:{action:'play',deck:'B'},
+    38:{action:'cue',deck:'A',momentary:true},39:{action:'cue',deck:'B',momentary:true},
+    40:{action:'sync',deck:'A'},41:{action:'sync',deck:'B'},
+    48:{action:'pad',deck:'A',pad:0},49:{action:'pad',deck:'A',pad:1},
+    50:{action:'pad',deck:'A',pad:2},51:{action:'pad',deck:'A',pad:3},
+    52:{action:'pad',deck:'B',pad:0},53:{action:'pad',deck:'B',pad:1},
+    54:{action:'pad',deck:'B',pad:2},55:{action:'pad',deck:'B',pad:3}
+  };
+  function applyMixxxMidi(data) {
+    if (!data || data.length < 3) return;
+    const status = Number(data[0]), note = Number(data[1]), value = Number(data[2]);
+    if (![0x80,0x90].includes(status & 0xF0)) return;
+    const info = feedbackNotes[note];
+    if (!info) return;
+    const on = (status & 0xF0) === 0x90 && value > 0;
+    const button = document.querySelector('[data-action="'+info.action+'"][data-deck="'+info.deck+'"]'+(info.pad === undefined ? '' : '[data-pad="'+info.pad+'"]'));
+    if (!button) return;
+    if (info.momentary) {
+      if (on) {
+        button.classList.add('feedback-flash');
+        window.setTimeout(() => button.classList.remove('feedback-flash'), 180);
+      }
+      return;
+    }
+    button.classList.toggle('active', on);
+    if (info.action === 'play') button.textContent = on ? 'Ⅱ PLAYING' : '▶ PLAY';
+    if (info.action === 'sync') button.classList.toggle('sync-on', on);
+    if (info.action === 'pad') button.classList.toggle('cue-set', on);
+  }
   const noteMap = {
     play:{A:36,B:37},cue:{A:38,B:39},sync:{A:40,B:41},loop:{A:42,B:43},
     pitchreset:{A:44,B:45},headcue:{A:46,B:47},loopin:{A:58,B:59},
@@ -115,11 +162,7 @@
   document.querySelectorAll('button[data-action]').forEach(b=>b.addEventListener('click',()=>{
     const action=b.dataset.action, deck=b.dataset.deck;
     pulseNote(noteForButton(b));
-    if(['play','loop','headcue','pad'].includes(action)) {
-      b.classList.toggle('active');
-      if(action==='play') b.textContent=b.classList.contains('active')?'Ⅱ PLAYING':'▶ PLAY';
-      if(action==='loop') b.textContent=b.classList.contains('active')?'LOOP ON':'2 BEAT LOOP';
-    }
+    // Button appearance is driven by Mixxx feedback, not guessed from a click.
     if(action==='pitchreset') {
       const slider=$('pitch'+deck);
       if(slider){slider.value=0;slider.dispatchEvent(new Event('input',{bubbles:true}));}
@@ -179,7 +222,7 @@
     if(!midiAccess)return;
     for(const input of midiAccess.inputs.values())input.onmidimessage=null;
     const input=midiAccess.inputs.get(midiInputSelect.value);
-    if(input)input.onmidimessage=e=>log((input.name||'MIDI')+' ← '+[...e.data].map(v=>v.toString(16).padStart(2,'0')).join(' '));
+    if(input)input.onmidimessage=e=>{ applyMixxxMidi([...e.data]); log((input.name||'MIDI')+' ← '+[...e.data].map(v=>v.toString(16).padStart(2,'0')).join(' ')); };
   }
   function refreshMidiPorts(){
     if(!midiAccess)return;
