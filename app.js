@@ -133,7 +133,8 @@
     const info = feedbackNotes[note];
     if (!info) return;
     const on = (status & 0xF0) === 0x90 && value > 0;
-    const button = document.querySelector('[data-action="'+info.action+'"][data-deck="'+info.deck+'"]'+(info.pad === undefined ? '' : '[data-pad="'+info.pad+'"]'));
+    const selectorAction = info.action === 'cuehold' ? 'cue' : info.action;
+    const button = document.querySelector('[data-action="'+selectorAction+'"][data-deck="'+info.deck+'"]'+(info.pad === undefined ? '' : '[data-pad="'+info.pad+'"]'));
     if (!button) return;
     if (info.action === 'cuehold') {
       cueFeedback[info.deck].held=on;
