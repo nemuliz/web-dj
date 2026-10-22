@@ -31,3 +31,18 @@ Use a local HTTP server or publish the repository with GitHub Pages. Web MIDI ge
 
 ## MIDI
 The app lists connected MIDI input/output devices and logs incoming messages. The current demo sends simple Note On test messages when buttons are clicked. The exact MIDI mapping depends on your hardware/software; this demo does not provide a guaranteed FLX4 hardware mapping.
+
+
+## LAN control from another device (Windows + Mixxx)
+
+You can operate Mixxx from a phone, iPad, or another computer on the same local network. The Windows PC runs this page and a WebSocket-to-MIDI bridge; the remote browser does not need Web MIDI support.
+
+1. Install and start **loopMIDI** on Windows. Create a virtual port named exactly `WebDJ Bridge`.
+2. Download/clone this repository to the Windows PC.
+3. Run `setup-lan.bat` once to install Python dependencies. Python 3.10 or newer is recommended.
+4. Run `start-lan.bat`. The console prints a one-time connection code and the local URL pattern.
+5. Find the Windows PC's IPv4 address with `ipconfig` (the address for the active Wi-Fi/Ethernet adapter), then on the other device open `http://<PC-IP>:8765/`. Replace `<PC-IP>` with the actual address.
+6. Press **LAN接続** and enter the connection code shown in the Windows console.
+7. In Mixxx, enable the **WebDJ Bridge** controller using the existing mapping, with loopMIDI's `WebDJ Bridge` port selected as its MIDI input.
+
+Allow Python / TCP port 8765 only on Windows **Private networks** if prompted. Keep the bridge on a trusted home/local network; do not forward this port from your router to the internet. The connection code changes each time the server starts. To use remote LAN control, open the page served by the Windows PC, not the GitHub Pages URL. The existing direct Web MIDI connection remains available for local use.
