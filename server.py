@@ -128,6 +128,19 @@ async def on_cleanup(_app):
         midi_out_name = None
 
 
+def _asyncio_exception_handler(loop, context):
+    # Windows Proactor may report a harmless reset when a browser closes/reconnects.
+    exc = context.get("exception")
+    message = str(context.get("message", ""))
+    if (
+        isinstance(exc, ConnectionResetError)
+        and getattr(exc, "winerror", None) == 10054
+        and "_ProactorBasePipeTransport._call_connection_lost" in message
+    ):
+        return
+    loop.default_exception_handler(context)
+
+
 def main():
     app = web.Application()
     app.router.add_get("/midi", midi_socket)
@@ -135,7 +148,11 @@ def main():
     app.router.add_get("/{path:.*}", static_file)
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
-    web.run_app(app, host=HOST, port=PORT)
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.set_exception_handler(_asyncio_exception_handler)
+    web.run_app(app, host=HOST, port=PORT, loop=loop)
 
 
 if __name__ == "__main__":
