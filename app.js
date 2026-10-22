@@ -107,14 +107,16 @@
     });
   });
 
+  // Feedback uses a separate note range from control input (36-63). This is
+  // essential because loopMIDI echoes input traffic to readers of the same port.
   const feedbackNotes = {
-    36:{action:'play',deck:'A'},37:{action:'play',deck:'B'},
-    38:{action:'cue',deck:'A',momentary:true},39:{action:'cue',deck:'B',momentary:true},
-    40:{action:'sync',deck:'A'},41:{action:'sync',deck:'B'},
-    48:{action:'pad',deck:'A',pad:0},49:{action:'pad',deck:'A',pad:1},
-    50:{action:'pad',deck:'A',pad:2},51:{action:'pad',deck:'A',pad:3},
-    52:{action:'pad',deck:'B',pad:0},53:{action:'pad',deck:'B',pad:1},
-    54:{action:'pad',deck:'B',pad:2},55:{action:'pad',deck:'B',pad:3}
+    80:{action:'play',deck:'A'},81:{action:'play',deck:'B'},
+    82:{action:'cue',deck:'A'},83:{action:'cue',deck:'B'},
+    84:{action:'sync',deck:'A'},85:{action:'sync',deck:'B'},
+    88:{action:'pad',deck:'A',pad:0},89:{action:'pad',deck:'A',pad:1},
+    90:{action:'pad',deck:'A',pad:2},91:{action:'pad',deck:'A',pad:3},
+    92:{action:'pad',deck:'B',pad:0},93:{action:'pad',deck:'B',pad:1},
+    94:{action:'pad',deck:'B',pad:2},95:{action:'pad',deck:'B',pad:3}
   };
   function applyMixxxMidi(data) {
     if (!data || data.length < 3) return;
@@ -125,16 +127,13 @@
     const on = (status & 0xF0) === 0x90 && value > 0;
     const button = document.querySelector('[data-action="'+info.action+'"][data-deck="'+info.deck+'"]'+(info.pad === undefined ? '' : '[data-pad="'+info.pad+'"]'));
     if (!button) return;
-    if (info.momentary) {
-      if (on) {
-        button.classList.add('feedback-flash');
-        window.setTimeout(() => button.classList.remove('feedback-flash'), 180);
-      }
-      return;
-    }
     button.classList.toggle('active', on);
     if (info.action === 'play') button.textContent = on ? 'Ⅱ PLAYING' : '▶ PLAY';
-    if (info.action === 'sync') button.classList.toggle('sync-on', on);
+    if (info.action === 'cue') button.textContent = on ? 'CUE READY' : 'CUE';
+    if (info.action === 'sync') {
+      button.classList.toggle('sync-on', on);
+      button.textContent = on ? 'SYNC ON' : 'SYNC';
+    }
     if (info.action === 'pad') button.classList.toggle('cue-set', on);
   }
   const noteMap = {
@@ -163,7 +162,7 @@
     const action=b.dataset.action, deck=b.dataset.deck;
     pulseNote(noteForButton(b));
     // CUE is a momentary action; flash it briefly instead of inventing a persistent state.
-    if (action === 'cue' || action === 'headcue') {
+    if (action === 'headcue') {
       b.classList.add('feedback-flash');
       window.setTimeout(() => b.classList.remove('feedback-flash'), 180);
     }
