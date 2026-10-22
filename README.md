@@ -11,9 +11,9 @@ DDJ-FLX4 / DDJ-400 inspired, browser-based two-deck DJ interface. Static files o
 
 ## Current controller UI
 
-- The top navigation switches between **DECKS**, **MIXER**, and **設定 / MIDI** so controls stay inside the viewport instead of being squeezed into one screen.
-- PLAY, SYNC, and HOT CUE button indicators are updated from MIDI output feedback sent by Mixxx. CUE is a momentary action and flashes briefly when pressed.
-- The Mixxx preset includes output mappings for deck play/sync and assigned hot-cue states. For LAN use, `server.py` receives MIDI feedback from the `WebDJ Bridge` loopMIDI port and forwards it to the authenticated browser.
+- The top navigation keeps both decks and the mixer together in **CONSOLE**; **設定 / MIDI** is a separate screen.
+- PLAY, CUE indicator, SYNC, and HOT CUE assignment states are updated from MIDI output feedback sent by Mixxx. CUE and HOT CUE send real press/release edges rather than a fixed short pulse.
+- Mixxx feedback uses a separate MIDI note range (80–95 decimal) from WebDJ control input (36–63), so loopMIDI echo cannot be mistaken for Mixxx's actual state. For LAN use, the bridge forwards these feedback messages to the authenticated browser.
 - After updating the project, replace **both** `WebDJ-Bridge.midi.xml` and `WebDJ-Bridge-script.js` in Mixxx's controllers folder, then fully restart Mixxx so the new mappings and feedback outputs are loaded.
 
 ## Japanese development notes
