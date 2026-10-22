@@ -14,6 +14,10 @@ PORT = 8765
 ACCESS_CODE = secrets.token_urlsafe(6)
 midi_out = None
 midi_out_name = None
+midi_in = None
+midi_in_name = None
+feedback_clients = set()
+feedback_task = None
 
 
 def open_midi_output():
@@ -44,6 +48,54 @@ def open_midi_output():
     except Exception as exc:
         print(f"[MIDI] {preferred} を開けません: {exc}")
         return None
+
+
+def open_midi_input():
+    global midi_in, midi_in_name
+    if midi_in is not None:
+        return midi_in
+    try:
+        names = mido.get_input_names()
+    except Exception as exc:
+        print(f"[MIDI] 入力ポート一覧を取得できません: {exc}")
+        return None
+    preferred = next((n for n in names if "webdj bridge" in n.lower()), None)
+    if preferred is None:
+        preferred = next((n for n in names if "loopmidi" in n.lower()), None)
+    if preferred is None:
+        print("[MIDI] Mixxx状態受信用の入力ポートが見つかりません。loopMIDIの 'WebDJ Bridge' を確認してください。")
+        return None
+    try:
+        midi_in = mido.open_input(preferred)
+        midi_in_name = preferred
+        print(f"[MIDI] Mixxxフィードバック入力: {preferred}")
+        return midi_in
+    except Exception as exc:
+        print(f"[MIDI] フィードバック入力 {preferred} を開けません: {exc}")
+        return None
+
+
+async def midi_feedback_loop():
+    while True:
+        try:
+            if midi_in is not None:
+                while True:
+                    message = midi_in.receive(block=False)
+                    if message is None:
+                        break
+                    if not message.is_meta and hasattr(message, "bytes"):
+                        data = message.bytes()
+                        for ws in tuple(feedback_clients):
+                            if not ws.closed:
+                                try:
+                                    await ws.send_json({"type": "mixxx_state", "data": data})
+                                except Exception:
+                                    feedback_clients.discard(ws)
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            print(f"[MIDI] フィードバック受信エラー: {exc}")
+        await asyncio.sleep(0.01)
 
 
 async def index(_request):
@@ -81,6 +133,7 @@ async def midi_socket(request):
                 if payload.get("type") == "auth" and secrets.compare_digest(str(payload.get("token", "")), ACCESS_CODE):
                     authenticated = True
                     await ws.send_json({"type": "authenticated", "message": "認証成功"})
+                                    feedback_clients.add(ws)
                     print(f"[LAN] 認証成功: {peer}")
                 else:
                     await ws.send_json({"type": "error", "message": "接続コードが違います"})
@@ -108,24 +161,39 @@ async def midi_socket(request):
             except Exception as exc:
                 await ws.send_json({"type": "error", "message": f"MIDI送信エラー: {exc}"})
     finally:
+        feedback_clients.discard(ws)
         print(f"[LAN] 切断: {peer}")
     return ws
 
 
-async def on_startup(_app):
+async def on_startup(app):
+    global feedback_task
     print("\nWebDJ LAN Bridge")
     print(f"ブラウザ: http://<このPCのLAN内IP>:{PORT}/")
     print(f"接続コード: {ACCESS_CODE}")
     print("WindowsファイアウォールでプライベートネットワークのTCP 8765を許可してください。")
     open_midi_output()
+    open_midi_input()
+    feedback_task = asyncio.create_task(midi_feedback_loop())
 
 
 async def on_cleanup(_app):
-    global midi_out, midi_out_name
+    global midi_out, midi_out_name, midi_in, midi_in_name, feedback_task
+    if feedback_task is not None:
+        feedback_task.cancel()
+        try:
+            await feedback_task
+        except asyncio.CancelledError:
+            pass
+        feedback_task = None
     if midi_out is not None:
         midi_out.close()
         midi_out = None
         midi_out_name = None
+    if midi_in is not None:
+        midi_in.close()
+        midi_in = None
+        midi_in_name = None
 
 
 def _asyncio_exception_handler(loop, context):
