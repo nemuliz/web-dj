@@ -12,7 +12,12 @@
   <div class="brand"><span class="brand-mark">◈</span><div><strong>WEBDJ</strong><small>DUAL DECK PERFORMANCE</small></div></div>
   <div class="top-status"><span id="midiDot" class="dot"></span><span id="midiStatus">MIDI未接続</span><button id="lanConnect" class="small-btn">LAN接続</button><button id="midiConnect" class="small-btn">MIDI接続</button><button id="fullscreenBtn" class="small-btn" aria-label="全画面表示">全画面</button></div>
 </header>
-<main>
+<main data-tab="decks">
+  <nav class="tabbar" role="tablist" aria-label="WebDJ画面">
+    <button class="tab-btn active" data-tab-target="decks" role="tab" aria-selected="true">DECKS</button>
+    <button class="tab-btn" data-tab-target="mixer" role="tab" aria-selected="false">MIXER</button>
+    <button class="tab-btn" data-tab-target="settings" role="tab" aria-selected="false">設定 / MIDI</button>
+  </nav>
   <section class="transport">
     <div class="deck" id="deckA" data-deck="A">
       <div class="deck-head"><span class="deck-tag">DECK 1</span><span class="track-name">MIDI CONTROLLER · MIXXX DECK 1</span></div>
