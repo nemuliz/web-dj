@@ -133,7 +133,7 @@ async def midi_socket(request):
                 if payload.get("type") == "auth" and secrets.compare_digest(str(payload.get("token", "")), ACCESS_CODE):
                     authenticated = True
                     await ws.send_json({"type": "authenticated", "message": "認証成功"})
-                                    feedback_clients.add(ws)
+                    feedback_clients.add(ws)
                     print(f"[LAN] 認証成功: {peer}")
                 else:
                     await ws.send_json({"type": "error", "message": "接続コードが違います"})
