@@ -414,18 +414,22 @@
       <control><description>Deck B HOT CUE 4 release</description><group>[Channel2]</group><key>WebDJBridge.hotcue4</key><status>0x80</status><midino>0x37</midino><options><Script-Binding/></options></control>
     </controls>
     <outputs>
-      <output><description>Deck A play state</description><group>[Channel1]</group><key>play_indicator</key><status>0x90</status><midino>0x24</midino><options><Normal/></options></output>
-      <output><description>Deck A sync state</description><group>[Channel1]</group><key>sync_enabled</key><status>0x90</status><midino>0x28</midino><options><Normal/></options></output>
-      <output><description>Deck A HOT CUE 1 assigned state</description><group>[Channel1]</group><key>hotcue_1_enabled</key><status>0x90</status><midino>0x30</midino><options><Normal/></options></output>
-      <output><description>Deck A HOT CUE 2 assigned state</description><group>[Channel1]</group><key>hotcue_2_enabled</key><status>0x90</status><midino>0x31</midino><options><Normal/></options></output>
-      <output><description>Deck A HOT CUE 3 assigned state</description><group>[Channel1]</group><key>hotcue_3_enabled</key><status>0x90</status><midino>0x32</midino><options><Normal/></options></output>
-      <output><description>Deck A HOT CUE 4 assigned state</description><group>[Channel1]</group><key>hotcue_4_enabled</key><status>0x90</status><midino>0x33</midino><options><Normal/></options></output>
-      <output><description>Deck B play state</description><group>[Channel2]</group><key>play_indicator</key><status>0x90</status><midino>0x25</midino><options><Normal/></options></output>
-      <output><description>Deck B sync state</description><group>[Channel2]</group><key>sync_enabled</key><status>0x90</status><midino>0x29</midino><options><Normal/></options></output>
-      <output><description>Deck B HOT CUE 1 assigned state</description><group>[Channel2]</group><key>hotcue_1_enabled</key><status>0x90</status><midino>0x34</midino><options><Normal/></options></output>
-      <output><description>Deck B HOT CUE 2 assigned state</description><group>[Channel2]</group><key>hotcue_2_enabled</key><status>0x90</status><midino>0x35</midino><options><Normal/></options></output>
-      <output><description>Deck B HOT CUE 3 assigned state</description><group>[Channel2]</group><key>hotcue_3_enabled</key><status>0x90</status><midino>0x36</midino><options><Normal/></options></output>
-      <output><description>Deck B HOT CUE 4 assigned state</description><group>[Channel2]</group><key>hotcue_4_enabled</key><status>0x90</status><midino>0x37</midino><options><Normal/></options></output>
+      <!-- Feedback notes are intentionally distinct from input notes 0x24-0x3F,
+           preventing loopMIDI echo from being mistaken for actual Mixxx state. -->
+      <output><description>Deck A play state feedback</description><group>[Channel1]</group><key>play_indicator</key><status>0x90</status><midino>0x50</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B play state feedback</description><group>[Channel2]</group><key>play_indicator</key><status>0x90</status><midino>0x51</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A cue indicator feedback</description><group>[Channel1]</group><key>cue_indicator</key><status>0x90</status><midino>0x52</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B cue indicator feedback</description><group>[Channel2]</group><key>cue_indicator</key><status>0x90</status><midino>0x53</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A sync state feedback</description><group>[Channel1]</group><key>sync_enabled</key><status>0x90</status><midino>0x54</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B sync state feedback</description><group>[Channel2]</group><key>sync_enabled</key><status>0x90</status><midino>0x55</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A HOT CUE 1 assigned state feedback</description><group>[Channel1]</group><key>hotcue_1_enabled</key><status>0x90</status><midino>0x58</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A HOT CUE 2 assigned state feedback</description><group>[Channel1]</group><key>hotcue_2_enabled</key><status>0x90</status><midino>0x59</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A HOT CUE 3 assigned state feedback</description><group>[Channel1]</group><key>hotcue_3_enabled</key><status>0x90</status><midino>0x5A</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck A HOT CUE 4 assigned state feedback</description><group>[Channel1]</group><key>hotcue_4_enabled</key><status>0x90</status><midino>0x5B</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B HOT CUE 1 assigned state feedback</description><group>[Channel2]</group><key>hotcue_1_enabled</key><status>0x90</status><midino>0x5C</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B HOT CUE 2 assigned state feedback</description><group>[Channel2]</group><key>hotcue_2_enabled</key><status>0x90</status><midino>0x5D</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B HOT CUE 3 assigned state feedback</description><group>[Channel2]</group><key>hotcue_3_enabled</key><status>0x90</status><midino>0x5E</midino><on>0x7F</on><off>0x00</off></output>
+      <output><description>Deck B HOT CUE 4 assigned state feedback</description><group>[Channel2]</group><key>hotcue_4_enabled</key><status>0x90</status><midino>0x5F</midino><on>0x7F</on><off>0x00</off></output>
     </outputs>
   </controller>
 </MixxxControllerPreset>
