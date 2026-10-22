@@ -95,3 +95,24 @@ footer { display:none; }
   .jog { width:min(100%,24vh,170px); }
   .channel .vertical input { height:min(9vh,70px); }
 }
+
+
+/* iPad Pro 11-inch landscape viewport: about 1194 x 834 CSS pixels. */
+@media (min-width:701px) and (max-width:1300px) and (orientation:landscape) {
+  .topbar { height:52px; flex-basis:52px; padding-left:14px; padding-right:14px; gap:10px; }
+  main { height:calc(100dvh - 52px); padding:7px; gap:7px; }
+  .transport { grid-template-columns:minmax(0,1fr) minmax(230px,24vw) minmax(0,1fr); grid-template-rows:minmax(0,1fr); gap:7px; }
+  .deck, .mixer { padding:clamp(6px,.8vh,11px); }
+  .deck-main { grid-template-columns:clamp(30px,3vw,40px) minmax(0,1fr) minmax(88px,.75fr); gap:clamp(4px,.55vw,8px); }
+  .jog { width:min(100%,29vh,230px); }
+  .deck-buttons { gap:4px; }
+  .deck-buttons button { padding:clamp(5px,.7vh,9px) 2px; font-size:clamp(8px,.68vw,10px); }
+  .channel-strip { gap:5px; }
+  .channel { padding:6px 4px; gap:5px; }
+  .channel .vertical input { height:min(12vh,96px); }
+  .cross-row { gap:6px; }
+  .bottom { flex-basis:clamp(94px,14vh,120px); }
+}
+@media (display-mode:fullscreen) {
+  .topbar { padding-top:env(safe-area-inset-top,0px); }
+}
