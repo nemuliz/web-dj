@@ -47,25 +47,24 @@ WebDJBridge.cue = function(_channel, _control, value, status, group) {
     engine.setValue(group, "cue_default", pressed ? 1 : 0);
 };
 
+// Toggle sync mode on each press. When enabling, also align the beat once.
 WebDJBridge.sync = function(_channel, _control, value, status, group) {
     var pressed = (status & 0xF0) === 0x90 && value > 0;
-    if (pressed) engine.setValue(group, "beatsync", 1);
+    if (!pressed) return;
+    if (engine.getValue(group, "sync_enabled") > 0) {
+        engine.setValue(group, "sync_enabled", 0);
+    } else {
+        engine.setValue(group, "beatsync", 1);
+        engine.setValue(group, "sync_enabled", 1);
+    }
 };
 
+// Mixxx's hotcue_X_activate handles both setting an empty slot and
+// activating an existing cue. Always send both press and release edges.
 WebDJBridge.hotcue = function(_channel, _control, value, status, group, hotcueNumber) {
     var pressed = (status & 0xF0) === 0x90 && value > 0;
-    var enabledControl = "hotcue_" + hotcueNumber + "_enabled";
     var activateControl = "hotcue_" + hotcueNumber + "_activate";
-    var setControl = "hotcue_" + hotcueNumber + "_set";
-    if (pressed) {
-        if (engine.getValue(group, enabledControl) > 0) {
-            engine.setValue(group, activateControl, 1);
-        } else {
-            engine.setValue(group, setControl, 1);
-        }
-    } else {
-        engine.setValue(group, activateControl, 0);
-    }
+    engine.setValue(group, activateControl, pressed ? 1 : 0);
 };
 
 WebDJBridge.hotcue1 = function(ch, ctl, val, status, group) { WebDJBridge.hotcue(ch, ctl, val, status, group, 1); };
