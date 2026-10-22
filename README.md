@@ -9,6 +9,13 @@ DDJ-FLX4 / DDJ-400 inspired, browser-based two-deck DJ interface. Static files o
 - Web MIDI API input monitoring and MIDI output test messages
 - No build step or dependencies
 
+## Current controller UI
+
+- The top navigation switches between **DECKS**, **MIXER**, and **設定 / MIDI** so controls stay inside the viewport instead of being squeezed into one screen.
+- PLAY, SYNC, and HOT CUE button indicators are updated from MIDI output feedback sent by Mixxx. CUE is a momentary action and flashes briefly when pressed.
+- The Mixxx preset includes output mappings for deck play/sync and assigned hot-cue states. For LAN use, `server.py` receives MIDI feedback from the `WebDJ Bridge` loopMIDI port and forwards it to the authenticated browser.
+- After updating the project, replace **both** `WebDJ-Bridge.midi.xml` and `WebDJ-Bridge-script.js` in Mixxx's controllers folder, then fully restart Mixxx so the new mappings and feedback outputs are loaded.
+
 ## Japanese development notes
 - [Architecture and compatibility notes](docs/ARCHITECTURE_JA.md)
 - [Generic MIDI protocol, loopMIDI setup and DJ software integration](docs/MIDI_PROTOCOL_JA.md)
