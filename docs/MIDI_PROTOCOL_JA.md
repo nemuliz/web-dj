@@ -54,6 +54,14 @@ CC値は各UIコントロールの最小値〜最大値を0〜127に正規化し
 - このリポジトリの `mixxx/WebDJ-Bridge.midi.xml` と `mixxx/WebDJ-Bridge-script.js` はセットで使います。両方をWindowsの `%LOCALAPPDATA%\\Mixxx\\controllers` フォルダーにコピーし、Mixxxを完全に再起動して `Preferences → Controllers` で `WebDJ Bridge (FLX4-style)` を有効にしてください。XMLだけではジョグ・ピッチ等のスクリプト機能が動きません。既にMixxxが起動中なら、ポート作成後に再起動します。
 - コントローラー一覧に表示されない場合は、まずMIDIモニターで `WebDJ Bridge` にイベントが届いているか切り分けてください。
 
+## MixxxからWebDJへの状態フィードバック
+
+- `mixxx/WebDJ-Bridge.midi.xml` には PLAY、SYNC、HOT CUE の出力マッピングもあります。Mixxxの `Preferences → Controllers` で WebDJ Bridge の **Output** 側も有効にしてください。
+- LAN操作では `server.py` が loopMIDI の `WebDJ Bridge` 入力側からMixxxの出力MIDIを受信し、WebSocketでブラウザに転送します。
+- Web MIDIを直接使う場合は、ブラウザ側の `INPUT` でMixxxの状態出力を受ける `WebDJ Bridge` ポートを選びます。
+- PLAY / SYNC / HOT CUE の表示は受信したMixxxの出力状態を使います。CUEは押下型の操作なので、短いフラッシュ表示です。
+- マッピングを更新した後は、 `WebDJ-Bridge.midi.xml` と `WebDJ-Bridge-script.js` の両方をMixxxのcontrollersフォルダーへコピーし、Mixxxを再起動してください。
+
 ## トラブルシューティングと制約
 
 - Chrome/EdgeでHTTPSまたはlocalhostを使い、ブラウザのMIDI権限を許可してください。
