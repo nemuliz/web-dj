@@ -162,7 +162,12 @@
   document.querySelectorAll('button[data-action]').forEach(b=>b.addEventListener('click',()=>{
     const action=b.dataset.action, deck=b.dataset.deck;
     pulseNote(noteForButton(b));
-    // Button appearance is driven by Mixxx feedback, not guessed from a click.
+    // CUE is a momentary action; flash it briefly instead of inventing a persistent state.
+    if (action === 'cue' || action === 'headcue') {
+      b.classList.add('feedback-flash');
+      window.setTimeout(() => b.classList.remove('feedback-flash'), 180);
+    }
+    // Persistent PLAY/SYNC/HOT CUE appearance is driven by Mixxx feedback.
     if(action==='pitchreset') {
       const slider=$('pitch'+deck);
       if(slider){slider.value=0;slider.dispatchEvent(new Event('input',{bubbles:true}));}
